@@ -18,7 +18,6 @@ SeaChest is an unofficial app and is in no way associated with Dropbox, Inc.
 - When loading a folder, reauthorization should work but there may still be issues with uploading or downloading a file first thing after an access token has expired. Workaround would be to refresh folder and try again.
 - Plan to add support for renaming and other additional features if time allows. Was created as a basic way of downloading new RPMs from Dropbox folder without needing Android Support.
 - Options to rename and delete files and folders are present but non-functional.
-- Upload button on App Cover is also present but non-functional, hope to add feature whereby this would be a shortcut to uploading a file, perhaps to a pre-chosen default location.
 
 <h3>Tips</h3>
 
