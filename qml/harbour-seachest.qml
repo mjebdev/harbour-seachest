@@ -325,7 +325,7 @@ ApplicationWindow {
                 //height: downloadSlider.height
                 value: uploadProgress
                 valueText: uploadProgressPct
-                label: qsTr("Uploading " + currentUlItem)
+                label: qsTr("Uploading ") + currentUlItem
 
             }
 
@@ -345,7 +345,7 @@ ApplicationWindow {
                 //height: downloadSlider.height
                 value: downloadProgress
                 valueText: downloadProgressPct
-                label: qsTr("Downloading " + currentDlItem)
+                label: qsTr("Downloading ") + currentDlItem
 
             }
 
