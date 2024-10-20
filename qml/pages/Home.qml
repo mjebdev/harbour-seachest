@@ -468,7 +468,7 @@ Page {
                         // Probably a better way to come up with a cache file name but going with this for now.
                         var keepEmSeparated = new Date().getTime();
                         var fileString = itemName + keepEmSeparated.toString() + ".jpeg"; // Need to assign as string first?
-                        getThumbnail.downloadThumbnail("https://content.dropboxapi.com/2/files/get_thumbnail_v2", "{\"resource\":{\".tag\":\"path\",\"path\":\"" + itemID + "\"}, \"size\": \"w64h64\"}", fileString, "Bearer " + settings.accessKey);
+                        getThumbnail.downloadThumbnail("https://content.dropboxapi.com/2/files/get_thumbnail_v2", "{\"resource\":{\".tag\":\"path\",\"path\":\"" + itemID + "\"}, \"size\": \"w256h256\"}", fileString, "Bearer " + settings.accessKey);
 
                     }
 
@@ -507,7 +507,7 @@ Page {
                                     // Resubmit request for the thumbnail.
                                     var keepEmSeparated = new Date().getTime();
                                     var fileString = itemName + keepEmSeparated.toString() + ".jpeg"; // Need to assign as string first?
-                                    getThumbnail.downloadThumbnail("https://content.dropboxapi.com/2/files/get_thumbnail_v2", "{\"resource\":{\".tag\":\"path\",\"path\":\"" + itemID + "\"}, \"size\": \"w128h128\"}", fileString, "Bearer " + settings.accessKey);
+                                    getThumbnail.downloadThumbnail("https://content.dropboxapi.com/2/files/get_thumbnail_v2", "{\"resource\":{\".tag\":\"path\",\"path\":\"" + itemID + "\"}, \"size\": \"w256h256\"}", fileString, "Bearer " + settings.accessKey);
 
                                 }
 
