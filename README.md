@@ -1,9 +1,9 @@
 # SeaChest
-A simple Dropbox client for Sailfish OS
+A simple Dropbox client for Sailfish OS.
 
 Version 0.1
 
-Licensed under GNU GPLv3
+Licensed under GNU GPLv3.
 
 SeaChest is an unofficial app and is in no way associated with Dropbox, Inc.
 
