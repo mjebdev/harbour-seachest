@@ -71,6 +71,21 @@ Page {
 
             }
 
+            TextSwitch {
+
+                id: overwriteWarningSwitch
+                text: qsTr("Show warning prior to overwriting an identically named file in Downloads");
+                checked: settings.overwriteWarning
+
+                onClicked: {
+
+                    settings.overwriteWarning = checked;
+                    settings.sync();
+
+                }
+
+            }
+
             SectionHeader {
 
                 text: qsTr("Authorization")
@@ -119,3 +134,4 @@ Page {
     }
 
 }
+    
