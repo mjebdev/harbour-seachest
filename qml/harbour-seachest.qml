@@ -9,7 +9,6 @@ ApplicationWindow {
 
     id: mainAppWindow
     initialPage: settings.accessKey === "" ? loadAuthorizeScreen : loadHomeScreen
-    // initialPage: loadHomeScreen // until webview can work with dropbox authorization
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
     allowedOrientations: defaultAllowedOrientations
     bottomMargin: downloadsUploadsPanel.visibleSize
@@ -17,21 +16,11 @@ ApplicationWindow {
     property string folderToList: ""
     property string folderToListName: qsTr("Home");
     property string folderToListPath: ""
-    // property bool uploadInProgress
     property string currentPath: "/"
     property bool activeDlTransfer
     property bool activeUlTransfer
-    // property int dlTransferProgress: 0.0
-    // property int ulTransferProgress: 0.0
     property int dlTransferOpacity: 0.0
     property int ulTransferOpacity: 0.0
-    // property string dlTransferProgressPctStr: ""
-    // property string ulTransferProgressPctStr: ""
-    // property string currentUlItemName
-    // property string currentDlItemName
-    // property int currentTransferTotal
-    // property int currentTransferLoaded
-    //onActiveUlTransferChanged: downloadsUploadsPanel.open = activeUlTransfer;
 
     onActiveDlTransferChanged: {
 
@@ -71,6 +60,8 @@ ApplicationWindow {
         property bool uploadToHomeFolder
         property bool itemTapToDl
         property bool showThumbnailForImageFiles: true
+        property bool autorename: true
+        property bool overwriteWarning: true
 
     }
 
@@ -106,21 +97,22 @@ ApplicationWindow {
                     var responseParsed = JSON.parse(responseText);
                     settings.accessKey = responseParsed.access_token;
                     settings.sync();
-                    notificationMain.previewSummary = "Reauthorized";
-                    notificationMain.publish();
-
+                    //notificationMain.previewSummary = "Reauthorized"; // no real need for notification when reauthorized, although it can explain longer than normal request time.
+                    //notificationMain.publish();
+                    console.log("Reauthorization successful.");
                     downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + downloadModel.get(0).currentDlItemID + "\"}", downloadModel.get(0).currentDlItem, "Bearer " + settings.accessKey);
 
                 }
-
+/*
                 else if (responseCode === 301) {
 
                     // refresh token with URL included in 301 headers.
+                    // used when domain redirected to evennode; have since moved to digitalocean who have domain also so no redirect needed.
                     console.log("Response code is 301 and the responseText is: " + responseText);
                     transferRefresh("DOWNLOAD", responseText + settings.refreshToken, "{\"path\":\"" + downloadModel.get(0).currentDlItemID + "\"}", downloadModel.get(0).currentDlItem);
 
                 }
-
+*/
                 else {
 
                     // handle app not reauthorizing.
@@ -149,7 +141,6 @@ ApplicationWindow {
                         activeDlTransfer = false;
                         downloadModel.clear();
                         //downloadModel.set(0, {"downloadedSoFar": 0, "downloadTotal": 0, "downloadProgress": 0.0, "downloadProgressPct": "0%"});
-
                         break;
 
                     case 401:
@@ -197,13 +188,13 @@ ApplicationWindow {
                     upload("https://content.dropboxapi.com/2/files/upload", uploadModel.get(0).currentUlItemPath, "{\"path\":\"" + uploadModel.get(0).currentLocalFolderPath + "/" + uploadModel.get(0).currentUlItem + "\"}", "Bearer " + settings.accessKey);
 
                 }
-
+/*
                 else if (responseCode == 301) {
 
                     console.log("(Upload object -- not yet completed fully. Response code is 301 and the responseText is: " + responseText);
 
                 }
-
+*/
                 else {
 
                     console.log("Error reauthorizing: " + responseCode);
@@ -227,27 +218,26 @@ ApplicationWindow {
                     notificationMain.previewSummary = "Upload of '" + uploadModel.get(0).currentUlItem + "' was successful.";
                     notificationMain.publish();
                     uploadModel.clear();
-                    //uploadModel.set(0, {"uploadProgress": 0.0, "uploadProgressPct": "0%"});
 
                 }
 
                 else if (responseText === "Error - File does not exist.") {
 
-                    notificationMain.previewSummary = "Error - File does not exist.";
+                    notificationMain.previewSummary = qsTr("Error - File does not exist.");
                     notificationMain.publish();
 
                 }
 
                 else if (responseText === "Error - Unable to open file.") {
 
-                    notificationMain.previewSummary = "Error - Unable to open file.";
+                    notificationMain.previewSummary = qsTr("Error - Unable to open file.");
                     notificationMain.publish();
 
                 }
 
                 else {
 
-                    notificationMain.previewSummary = "Other error: " + responseCode + ". Copied to clipboard.";
+                    notificationMain.previewSummary = qsTr("Other error: %1. Copied to clipboard.").arg(responseCode);
                     Clipboard.text = responseText;
                     notificationMain.publish();
 
@@ -310,7 +300,7 @@ ApplicationWindow {
         open: false //--to begin with at least.    activeDlTransfer // || activeUlTransfer
         dock: Dock.Bottom
         width: parent.width
-        height: downloadsUploadsListview.height + uploadsListview.height
+        height: downloadsListview.height + uploadsListview.height
 
         SilicaListView {
 
@@ -333,7 +323,7 @@ ApplicationWindow {
 
         SilicaListView {
 
-            id: downloadsUploadsListview
+            id: downloadsListview
             model: downloadModel
             height: contentHeight
             width: parent.width
