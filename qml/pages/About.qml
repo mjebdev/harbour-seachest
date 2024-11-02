@@ -92,7 +92,7 @@ Page {
                             font.pixelSize: Theme.fontSizeExtraSmall
                             color: Theme.primaryColor
                             wrapMode: Text.Wrap
-                            text: qsTr("An unofficial Dropbox client for Sailfish OS.\n\nby Michael J. Barrett\nmjeb.dev\n\nVersion 0.1\nLicensed under GNU GPLv3");
+                            text: qsTr("A simple Dropbox client for Sailfish OS.\n\nby Michael J. Barrett\nmjeb.dev\n\nVersion 0.2\nLicensed under GNU GPLv3\n\nSeaChest is an unofficial app and is in no way associated with Dropbox, Inc.");
                             bottomPadding: Theme.paddingLarge
 
                         }
