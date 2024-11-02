@@ -12,6 +12,7 @@ CoverBackground {
         anchors.centerIn: parent
         text: "SeaChest"
         font.pixelSize: Theme.fontSizeSmall
+        color: Theme.highlightColor
 
     }
 
