@@ -10,7 +10,7 @@ Page {
     allowedOrientations: Orientation.PortraitMask
     property string currentDownload
     property string localHeaderName
-    property string localFolderPath
+    property string currentFolderPath
     property string authorizationToken
     property string selectedLocalFile
     property string selectedFileName
@@ -296,42 +296,37 @@ Page {
                 var responseParsed = JSON.parse(responseText);
                 settings.accessKey = responseParsed.access_token;
                 settings.sync();
-                notificationMain.previewSummary = "Reauthorized";
-                notificationMain.publish();
+                //notificationMain.previewSummary = "Reauthorized";
+                //notificationMain.publish();
+                console.log("Reauthorized.");
 
-                switch (requestType) {
+                switch (origRequestType) {
 
                     case "DOWNLOAD": {
 
-                        mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", path, newFile, "Bearer " + settings.accessKey);
+                        mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", fieldOne, fieldTwo, "Bearer " + settings.accessKey);
                         break;
 
                     }
 
                     case "UPLOAD": {
 
-                        mainUpload.upload("https://content.dropboxapi.com/2/files/upload", path, newFile, "Bearer " + settings.accessKey);
-                        break;
-
-                    }
-
-                    case "RENAME": {
-
-                        console.log("Not yet implemented.");
-                        break;
-
-                    }
-
-                    case "FILE_INFO": {
-
-                        console.log("Not yet implemented.");
+                        mainUpload.upload("https://content.dropboxapi.com/2/files/upload", fieldOne, fieldTwo, "Bearer " + settings.accessKey);
                         break;
 
                     }
 
                     case "DELETE": {
 
-                        console.log("Not yet implemented.");
+                        renameOrDelete("https://api.dropboxapi.com/2/files/delete_v2", fieldOne, "Bearer " + settings.accessKey, "DELETE");
+                        break;
+
+                    }
+
+                    case "RENAME": {
+
+                        // autoRename preference already recorded as part of the data string.
+                        renameOrDelete("https://api.dropboxapi.com/2/files/move_v2", fieldOne, "Bearer " + settings.accessKey, "RENAME");
 
                     }
 
@@ -341,8 +336,8 @@ Page {
 
             else {
 
-                console.log("Error reauthorizing: " + responseCode);
-                console.log("Request type: " + requestType);
+                console.log("Error refreshing token: " + responseCode);
+                console.log("Original request type: " + origRequestType);
                 console.log("Response text: " + responseText);
                 notificationMain.previewSummary = qsTr("Error reauthorizing. Please try resubmitting your request.");
                 notificationMain.publish();
@@ -360,7 +355,7 @@ Page {
 
         if (folderToList === "") homeOrRefreshMenu.text = qsTr("Refresh");
         localHeaderName = folderToListName;
-        localFolderPath = folderToListPath;
+        currentFolderPath = folderToListPath;
         folderListModel.clear();
         listItemsBusy.running = true;
         listFolderOrUpload.listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey);
@@ -384,7 +379,6 @@ Page {
             bottom: uploadStatusBar.top
 
         }
-
 
         PullDownMenu {
 
@@ -454,6 +448,15 @@ Page {
             id: listItem
             contentHeight: delegateItemRow.height
             openMenuOnPressAndHold: settings.itemTapToDl
+
+            BusyIndicator {
+
+                id: renameOrDeleteBusy
+                running: false
+                anchors.centerIn: parent
+                size: BusyIndicatorSize.Small
+
+            }
 
             menu: ContextMenu {
 
@@ -808,11 +811,7 @@ Page {
 
                         else {
 
-                            if (!activeDlTransfer) {
-
-                                startDownload();
-
-                            } // nothing will happen if download is in progress
+                            if (!activeDlTransfer) startDownload(); // nothing will happen if download is in progress
 
                             else {
 
@@ -833,8 +832,30 @@ Page {
 
                     onClicked: {
 
-                        // the api call is to move the file / folder.
-                        console.log("Rename option tapped.");
+                        // hide reg row
+                        // show edit text
+                        delegateItemColumn.visible = false;
+                        editText.text = itemName;
+                        editText.visible = true;
+                        editText.forceActiveFocus();
+
+                    }
+
+                }
+
+                MenuItem {
+
+                    enabled: false
+                    height: Theme.paddingLarge
+                    //visible: itemTag === "folder" ? false : true
+
+                    Separator {
+
+                        width: parent.width - (Theme.horizontalPageMargin * 2)
+                        x: Theme.horizontalPageMargin
+                        y: (parent.height - this.height) * 0.5
+                        horizontalAlignment: Qt.AlignHCenter
+                        color: Theme.secondaryColor
 
                     }
 
@@ -843,12 +864,16 @@ Page {
                 MenuItem {
                     
                     text: itemTag === "folder" ? qsTr("Delete Folder") : qsTr("Delete File")
-                    
+                    color: Theme.errorColor
+
                     onClicked: {
-                        
-                        // start remorse timer
-                        // remorseAction(string text, object action, int timeout)
-                        console.log("Delete menu item tapped.");
+
+                        listItem.remorseDelete(function() {
+
+                            renameOrDeleteBusy.running = true;
+                            renameOrDelete.renameOrDelete("https://api.dropboxapi.com/2/files/delete_v2", "{\"path\":\"" + itemID + "\"}", "Bearer " + settings.accessKey, "DELETE");
+
+                        });
 
                     }
                     
@@ -856,11 +881,103 @@ Page {
 
             }
 
+            NetworkAccess {
+
+                id: renameOrDelete
+
+                onFinished: {
+
+                    console.log("Request type is : " + requestType + "\nResponse code is: " + responseCode);
+
+                    switch (responseCode) {
+
+                    case 200:
+
+                        renameOrDeleteBusy.running = false;
+                        var idx = index;
+
+                        if (requestType === "RENAME") {
+
+                            folderListModel.set(index, {"itemName": editText.text});
+                            editText.focus = false;
+                            //editText.visible = false;
+                            //editText.text = "";
+                            //delegateItemColumn.visible = true;
+
+                            /* -- if refreshing list from server following the renaming:
+                            listItemsBusy.running = true;
+                            listFolderOrUpload.listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + currentFolderPath + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey);
+                            folderListModel.clear();
+                            */
+
+                        }
+
+                        else if (requestType === "TOKEN_REFRESH") { // in this case fieldOne is URL and fieldTwo is data?
+
+                            var responseParsed = JSON.parse(responseText);
+                            settings.accessKey = responseParsed.access_token;
+                            settings.sync();
+                            // may be a better way than below. fieldOne should be the data JSON string
+                            if (origRequestType === "DELETE") renameOrDelete("https://api.dropboxapi.com/2/files/delete_v2", fieldOne, "Bearer " + settings.accessKey, origRequestType);
+                            else renameOrDelete("https://api.dropboxapi.com/2/files/move_v2", fieldOne, "Bearer " + settings.accessKey, origRequestType); // "RENAME"
+
+                        }
+
+                        else { // has to be delete
+
+                            // going with just removing the entry in the list as opposed to refreshing the list from the server.
+                            // pro is it's quicker, con is that list is not fully up to date, e.g. change just made on another device etc.
+                            // though these circumstances would be rare? and user aware of ways to refresh folder list if so desired.
+                            folderListModel.remove(idx);
+
+                        }
+
+                        break;
+
+                    case 401: // responseText should be the data with this responseCode
+
+                        // Need a way to keep saved the most recent request?
+                        // folderRefresh("https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken);
+                        console.log("401 response -- needs token refreshed.");
+                        tokenRefresh(requestType, "https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken, responseText, "{}");
+                        break;
+
+                    case 409:
+
+                        console.log("Response code is 409\nResponse text: " + responseText);
+                        // could be various reasons, same name as before being one.
+                        renameOrDeleteBusy.running = false;
+                        editText.focus = false;
+                        if (requestType === "RENAME") downloadNotifier.previewSummary = qsTr("Unable to rename item. Please try again & avoid entering the same name.");
+                        else downloadNotifier.previewSummary = qsTr("Unable to delete item. Error code 409.");
+                        downloadNotifier.publish();
+                        break;
+
+                    default:
+
+                        renameOrDeleteBusy.running = false;
+                        editText.focus = false;
+                        downloadNotifier.previewSummary = qsTr("Unexpected error. Code " + responseCode);
+                        downloadNotifier.publish();
+                        console.log("Not 200 or 201--" + responseCode);
+
+                    }
+
+                }
+
+            }
+
             function startDownload() {
 
-                downloadModel.set(0, {"currentDlItem": itemName, "currentDlItemID": itemID, "downloadProgressPct": "0%"});
-                activeDlTransfer = true;
-                mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + itemID + "\"}", itemName, "Bearer " + settings.accessKey);
+                if (listFolderOrUpload.fileAlreadyExists(itemName) && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName, "fileId": itemID});
+
+                else {
+
+                    downloadModel.set(0, {"currentDlItem": itemName, "currentDlItemID": itemID, "downloadProgressPct": "0%"});
+                    activeDlTransfer = true;
+                    mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + itemID + "\"}", itemName, "Bearer " + settings.accessKey);
+
+                }
 
             }
 
@@ -877,19 +994,11 @@ Page {
 
                 if (settings.itemTapToDl) {
 
-                    if (itemTag === "folder") {
-
-                        openFolder();
-
-                    }
+                    if (itemTag === "folder") openFolder();
 
                     else {
 
-                        if (!activeDlTransfer) {
-
-                            startDownload();
-
-                        } // nothing will happen if download is in progress
+                        if (!activeDlTransfer) startDownload(); // nothing will happen if download is in progress
 
                         else {
 
@@ -915,19 +1024,11 @@ Page {
 
                 if (!settings.itemTapToDl) {
 
-                    if (itemTag === "folder") {
-
-                        openFolder();
-
-                    }
+                    if (itemTag === "folder") openFolder();
 
                     else {
 
-                        if (!activeDlTransfer) {
-
-                            startDownload();
-
-                        } // nothing will happen if download is in progress
+                        if (!activeDlTransfer) startDownload(); // nothing will happen if download is in progress
 
                         else {
 
@@ -948,8 +1049,43 @@ Page {
                 width: parent.width - (Theme.horizontalPageMargin * 2)
                 x: Theme.horizontalPageMargin
 
+                TextField {
+
+                    id: editText
+                    width: parent.width
+                    visible: false
+                    anchors.verticalCenter: parent.verticalCenter
+                    wrapMode: Text.WordWrap
+                    backgroundStyle: TextEditor.NoBackground
+                    labelVisible: false
+                    horizontalAlignment: Text.AlignHCenter
+
+                    onFocusChanged: {
+
+                        if (!focus) {
+
+                            editText.visible = false;
+                            editText.text = "";
+                            delegateItemColumn.visible = true;
+
+                        }
+
+                    }
+
+                    EnterKey.onClicked: {
+
+                        renameOrDeleteBusy.running = true;
+                        var folderPath = itemPath.slice(0, (itemPath.length - itemName.length)); // should result in parent folder, including '/' at end.
+                        if (settings.autoRename) renameOrDelete.renameOrDelete("https://api.dropbox.com/2/files/move_v2", "{\"from_path\":\"" + itemPath + "\", \"to_path\":\"" + folderPath + editText.text + "\",\"autorename\":true}", "Bearer " + settings.accessKey, "RENAME");
+                        else renameOrDelete.renameOrDelete("https://api.dropbox.com/2/files/move_v2", "{\"from_path\":\"" + itemPath + "\", \"to_path\":\"" + folderPath + editText.text + "\",\"autorename\":false}", "Bearer " + settings.accessKey, "RENAME");
+
+                    }
+
+                }
+
                 Column {
 
+                    id: delegateItemColumn
                     width: parent.width
                     height: fileOrFolderItemRow.height + topGapRow.height + bottomGapRow.height
 
@@ -1125,12 +1261,6 @@ Page {
 
         }
 
-        Behavior on visible {
-
-
-
-        }
-
         delegate: ProgressBar {
 
             Component.onCompleted: {
@@ -1161,14 +1291,66 @@ Page {
 
             onSelectedContentPropertiesChanged: {
 
-                // localFolderPath variable is misnamed, should be serverFolderPath?
                 page.selectedFileName = selectedContentProperties.fileName;
                 page.selectedLocalFile = selectedContentProperties.filePath;
-                if (settings.uploadToHomeFolder) localFolderPath = "";
-                uploadModel.set(0, {"currentUlItem": page.selectedFileName, "currentUlItemPath": page.selectedLocalFile, "currentLocalFolderPath": localFolderPath, "uploadProgress": 0.0, "uploadProgressPct": "0%"});
+                var uploadToHere = currentFolderPath;
+                if (settings.uploadToHomeFolder) uploadToHere = "";
+                uploadModel.set(0, {"currentUlItem": page.selectedFileName, "currentUlItemPath": page.selectedLocalFile, "currentFolderPath": uploadToHere, "uploadProgress": 0.0, "uploadProgressPct": "0%"});
                 activeUlTransfer = true;
                 ulTransferOpacity = 1.0;
-                mainUpload.upload("https://content.dropboxapi.com/2/files/upload", page.selectedLocalFile, "{\"path\":\"" + localFolderPath + "/" + page.selectedFileName + "\"}", "Bearer " + settings.accessKey);
+                mainUpload.upload("https://content.dropboxapi.com/2/files/upload", page.selectedLocalFile, "{\"path\":\"" + uploadToHere + "/" + page.selectedFileName + "\"}", "Bearer " + settings.accessKey);
+
+            }
+
+        }
+
+    }
+
+    Component {
+
+        id: confirmOverwriteDialog
+
+        Dialog {
+
+            property string fileName
+            property string fileId
+
+            Column {
+
+                width: parent.width
+
+                DialogHeader { }
+
+                Label {
+
+                    width: parent.width - (Theme.horizontalPageMargin * 2)
+                    x: Theme.horizontalPageMargin
+                    text: qsTr("A file with the name \"%1\" already exists in the Downloads folder.").arg(fileName);
+                    color: Theme.highlightColor
+                    wrapMode: Text.WordWrap
+                    bottomPadding: Theme.paddingLarge
+
+                }
+
+                Label {
+
+                    topPadding: Theme.paddingLarge
+                    width: parent.width - (Theme.horizontalPageMargin * 2)
+                    x: Theme.horizontalPageMargin
+                    text: qsTr("Overwrite?");
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pixelSize: Theme.fontSizeLarge
+                    color: Theme.highlightColor
+
+                }
+
+            }
+
+            onAccepted: {
+
+                downloadModel.set(0, {"currentDlItem": fileName, "currentDlItemID": fileId, "downloadProgressPct": "0%"});
+                activeDlTransfer = true;
+                mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + fileId + "\"}", fileName, "Bearer " + settings.accessKey);
 
             }
 
