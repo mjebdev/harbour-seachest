@@ -143,6 +143,10 @@ Licensed under GNU GPLv3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Show warning prior to overwriting an identically named file in Downloads</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Tap for other options</source>
         <translation type="unfinished"></translation>
     </message>
