@@ -8,12 +8,12 @@ Name:       harbour-seachest
 # >> macros
 # << macros
 
-Summary:    SeaChest
+Summary:    A simple, unofficial Dropbox client for Sailfish OS.
 Version:    0.2
 Release:    1
 Group:      Qt/Qt
-License:    LICENSE
-URL:        https://github.com/mjebdev/harbour-seachest
+License:    GNU GPLv3
+URL:        https://mjeb.dev
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-seachest.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
@@ -24,7 +24,7 @@ BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  desktop-file-utils
 
 %description
-Short description of my Sailfish OS Application
+A simple, unofficial Dropbox client for Sailfish OS.
 
 
 %prep
