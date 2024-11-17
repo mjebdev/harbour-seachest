@@ -8,8 +8,8 @@ Name:       harbour-seachest
 # >> macros
 # << macros
 
-Summary:    A simple, unofficial Dropbox client for Sailfish OS.
-Version:    0.2
+Summary:    An unofficial Dropbox client for Sailfish OS.
+Version:    0.3
 Release:    1
 Group:      Qt/Qt
 License:    GNU GPLv3
@@ -24,7 +24,7 @@ BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  desktop-file-utils
 
 %description
-A simple, unofficial Dropbox client for Sailfish OS.
+An unofficial Dropbox client for Sailfish OS.
 
 
 %prep
