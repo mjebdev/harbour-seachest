@@ -1,6 +1,6 @@
 Name: harbour-seachest
-Summary: A simple, unofficial Dropbox client for Sailfish OS.
-Version: 0.2
+Summary: An unofficial Dropbox client for Sailfish OS.
+Version: 0.3
 Release: 1
 # The contents of the Group field should be one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
@@ -12,7 +12,7 @@ License: GNU GPLv3
 Sources:
 - '%{name}-%{version}.tar.bz2'
 Description: |
-  A simple, unofficial Dropbox client for Sailfish OS.
+  An unofficial Dropbox client for Sailfish OS.
 Builder: qmake5
 
 # This section specifies build dependencies that are resolved using pkgconfig.
