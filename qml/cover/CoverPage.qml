@@ -6,13 +6,24 @@ CoverBackground {
     id: cover
     allowResize: true
 
-    Label {
+    Image {
 
-        id: label
-        anchors.centerIn: parent
-        text: "SeaChest"
-        font.pixelSize: Theme.fontSizeSmall
-        color: Theme.highlightColor
+        id: coverBackgroundIcon
+        source: "harbour-seachest-grayscale.png"
+        width: parent.height - (Theme.paddingMedium * 2)
+        height: width
+        fillMode: Image.PreserveAspectFit
+        opacity: 0.15
+
+        anchors {
+
+            verticalCenter: parent.verticalCenter
+            bottom: parent.bottom
+            bottomMargin: Theme.paddingMedium
+            right: parent.right
+            rightMargin: Theme.paddingMedium
+
+        }
 
     }
 
