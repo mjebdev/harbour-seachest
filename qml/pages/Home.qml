@@ -798,14 +798,34 @@ Page {
                 }
 */
                 MenuItem {
+
+                    text: qsTr("Open")
+                    visible: itemTag === "folder"
+
+                    onClicked: {
+
+                        openFolder();
+
+                    }
+
+                }
+
+                MenuItem {
                     
-                    text: itemTag === "folder" ? qsTr("Open") : qsTr("Download")
+                    text: itemTag === "folder" ? qsTr("Download ZIP") : qsTr("Download")
                     
                     onClicked: {
                         
                         if (itemTag === "folder") {
 
-                            openFolder();
+                            if (!activeDlTransfer) startZipDownload(); // nothing will happen if download is in progress
+
+                            else { // plan to increase this limit to four active downloads.
+
+                                downloadNotifier.previewSummary = "Download already in progress";
+                                downloadNotifier.publish();
+
+                            }
 
                         }
 
@@ -813,7 +833,7 @@ Page {
 
                             if (!activeDlTransfer) startDownload(); // nothing will happen if download is in progress
 
-                            else {
+                            else { // plan to increase this limit to four active downloads.
 
                                 downloadNotifier.previewSummary = "Download already in progress";
                                 downloadNotifier.publish();
@@ -976,6 +996,20 @@ Page {
                     downloadModel.set(0, {"currentDlItem": itemName, "currentDlItemID": itemID, "downloadProgressPct": "0%"});
                     activeDlTransfer = true;
                     mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + itemID + "\"}", itemName, "Bearer " + settings.accessKey);
+
+                }
+
+            }
+
+            function startZipDownload() {
+
+                if (listFolderOrUpload.fileAlreadyExists(itemName + ".zip") && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName + ".zip", "fileId": itemID});
+
+                else {
+
+                    downloadModel.set(0, {"currentDlItem": itemName + ".zip", "currentDlItemID": itemID, "downloadProgressPct": "0%"});
+                    activeDlTransfer = true;
+                    mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download_zip", "{\"path\":\"" + itemID + "\"}", itemName + ".zip", "Bearer " + settings.accessKey);
 
                 }
 
