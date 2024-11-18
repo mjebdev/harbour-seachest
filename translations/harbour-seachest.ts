@@ -13,7 +13,7 @@
 by Michael J. Barrett
 mjeb.dev
 
-Version 0.1
+Version 0.3
 Licensed under GNU GPLv3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -123,6 +123,26 @@ Licensed under GNU GPLv3</source>
         <source>Delete File</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Overwrite?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A file with the name &quot;%1&quot; already exists in the Downloads folder.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to rename item. Please try again &amp; avoid entering the same name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete item. Error code 409.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download ZIP</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Settings</name>
@@ -140,10 +160,6 @@ Licensed under GNU GPLv3</source>
     </message>
     <message>
         <source>Press &amp; hold for other options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show warning prior to overwriting an identically named file in Downloads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -166,6 +182,10 @@ Licensed under GNU GPLv3</source>
         <source>Erase Access Key</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show warning prior to overwriting an identically named file in Downloads</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>harbour-seachest</name>
@@ -183,6 +203,18 @@ Licensed under GNU GPLv3</source>
     </message>
     <message>
         <source>Downloading </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error - File does not exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error - Unable to open file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Other error: %1. Copied to clipboard.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
