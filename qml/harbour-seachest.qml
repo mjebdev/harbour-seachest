@@ -188,13 +188,7 @@ ApplicationWindow {
                     upload("https://content.dropboxapi.com/2/files/upload", uploadModel.get(0).currentUlItemPath, "{\"path\":\"" + uploadModel.get(0).currentLocalFolderPath + "/" + uploadModel.get(0).currentUlItem + "\"}", "Bearer " + settings.accessKey);
 
                 }
-/*
-                else if (responseCode == 301) {
 
-                    console.log("(Upload object -- not yet completed fully. Response code is 301 and the responseText is: " + responseText);
-
-                }
-*/
                 else {
 
                     console.log("Error reauthorizing: " + responseCode);
