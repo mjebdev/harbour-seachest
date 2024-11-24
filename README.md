@@ -2,7 +2,7 @@
 An unofficial Dropbox client for Sailfish OS.
 
 Version 0.3
-Licensed under GNU GPLv3.
+<br>Licensed under GNU GPLv3.
 
 Swedish translation by [eson57](https://github.com/eson57).
 
