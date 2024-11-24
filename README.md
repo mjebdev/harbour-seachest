@@ -38,6 +38,6 @@ Swedish translation by [eson57](https://github.com/eson57)
 
 <h3>Donate</h3>
 
-- <a href="https://ko-fi.com/mjebdev">Support me on Ko-fi</a>
+- <a href="https://ko-fi.com/mjebdev">Ko-fi</a>
 - <a href="https://buymeacoffee.com/mjebdev">Buy Me a Coffee</a>
 - <a href="https://paypal.me/mjebdev">PayPal</a>
