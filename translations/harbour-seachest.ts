@@ -14,7 +14,9 @@ by Michael J. Barrett
 mjeb.dev
 
 Version 0.3
-Licensed under GNU GPLv3</source>
+Licensed under GNU GPLv3
+
+Swedish translation by Åke Engelbrektson</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
