@@ -13,15 +13,19 @@
 by Michael J. Barrett
 mjeb.dev
 
-Version 0.1
-Licensed under GNU GPLv3</source>
+Version 0.3
+Licensed under GNU GPLv3
+    
+Swedish translation by Åke Engelbrektson</source>
         <translation>En inofficiell Dropbox-klient för Sailfish OS.
 
 av Michael J. Barrett
 mjeb.dev
 
-Version 0.1
-Licensierad under GNU GPLv3</translation>
+Version 0.3
+Licensierad under GNU GPLv3
+    
+Svensk översättning av Åke Engelbrektson</translation>
     </message>
 </context>
 <context>
@@ -118,6 +122,10 @@ Licensierad under GNU GPLv3</translation>
         <translation>Ladda ner</translation>
     </message>
     <message>
+        <source>Download ZIP</source>
+        <translation>Ladda ner ZIP</translation>
+    </message>
+    <message>
         <source>Rename</source>
         <translation>Byt namn</translation>
     </message>
@@ -128,6 +136,14 @@ Licensierad under GNU GPLv3</translation>
     <message>
         <source>Delete File</source>
         <translation>Ta bort fil</translation>
+    </message>
+    <message>
+        <source>Overwrite?</source>
+        <translation>Skriva över?</translation>
+    </message>
+    <message>
+        <source>A file with the name &quot;%1&quot; already exists in the Downloads folder.</source>
+        <translation>En fil med namnet &quot;%1&quot; finns redan i mappen Nedladdningar.</translation>
     </message>
 </context>
 <context>
