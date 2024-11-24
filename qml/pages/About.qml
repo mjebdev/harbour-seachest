@@ -92,7 +92,7 @@ Page {
                             font.pixelSize: Theme.fontSizeExtraSmall
                             color: Theme.primaryColor
                             wrapMode: Text.Wrap
-                            text: qsTr("An unofficial Dropbox client for Sailfish OS.\n\nby Michael J. Barrett\nmjeb.dev\n\nVersion 0.3\nLicensed under GNU GPLv3");
+                            text: qsTr("An unofficial Dropbox client for Sailfish OS.\n\nby Michael J. Barrett\nmjeb.dev\n\nVersion 0.3\nLicensed under GNU GPLv3\n\nSwedish translation by Åke Engelbrektson");
                             bottomPadding: Theme.paddingLarge
 
                         }
