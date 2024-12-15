@@ -9,7 +9,7 @@ Name:       harbour-seachest
 # << macros
 
 Summary:    An unofficial Dropbox client for Sailfish OS.
-Version:    0.3
+Version:    0.3.1
 Release:    1
 Group:      Qt/Qt
 License:    GNU GPLv3
@@ -17,6 +17,8 @@ URL:        https://mjeb.dev
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-seachest.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
+Requires:   amber-web-authorization
+Requires:   libamberwebauthorization
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
