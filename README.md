@@ -1,10 +1,11 @@
 # SeaChest
 An unofficial Dropbox client for Sailfish OS.
 
-Version 0.3
+Version 0.3.1
 <br>Licensed under GNU GPLv3
 
-Swedish translation by [eson57](https://github.com/eson57)
+Much-appreciated Swedish translation by [eson57](https://github.com/eson57)
+<br>Any further help with translations is very welcome!
 
 <h3>Features</h3>
 
@@ -17,7 +18,7 @@ Swedish translation by [eson57](https://github.com/eson57)
 
 - No sorting of files or folders apart from sorting obtained directly from the API output (appears to be by modified date, oldest to newest, with folders generally on top but not always).
 - If downloading a file and uploading at the same time, progress bars at bottom of screen may not render properly. Upload progress bar sometimes stays visible after transfer completed; app restart will allow for continued uploading.
-- Reauthorization still not working with all requests, e.g. uploading or downloading a file/folder. Workaround would be to refresh folder and retry.
+- Reauthorization still not working with all requests, e.g. uploading or downloading a file/folder. Workaround is to refresh folder and retry.
 
 <h3>Navigation</h3>
 
@@ -30,7 +31,7 @@ Swedish translation by [eson57](https://github.com/eson57)
 
 - Search.
 - Sorting by name / modified / added.
-- Showing full filename when menu opened or having multiple lines for an item with a longer name.
+- Showing full filename when menu opened or having multiple lines for filenames when listed.
 
 <h3>Rationale</h3>
 
