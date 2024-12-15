@@ -13,7 +13,7 @@
 by Michael J. Barrett
 mjeb.dev
 
-Version 0.3
+Version 0.3.1
 Licensed under GNU GPLv3
     
 Swedish translation by Åke Engelbrektson</source>
@@ -22,7 +22,7 @@ Swedish translation by Åke Engelbrektson</source>
 av Michael J. Barrett
 mjeb.dev
 
-Version 0.3
+Version 0.3.1
 Licensierad under GNU GPLv3
     
 Svensk översättning av Åke Engelbrektson</translation>
@@ -31,8 +31,8 @@ Svensk översättning av Åke Engelbrektson</translation>
 <context>
     <name>Authorize</name>
     <message>
-        <source>Authorize SeaChest</source>
-        <translation>Auktorisera SeaChest</translation>
+        <source>Authorize</source>
+        <translation>Auktorisera</translation>
     </message>
     <message>
         <source>Authorization Successful</source>
@@ -108,10 +108,6 @@ Svensk översättning av Åke Engelbrektson</translation>
     <message>
         <source>Size:</source>
         <translation>Storlek:</translation>
-    </message>
-    <message>
-        <source> bytes</source>
-        <translation> byte</translation>
     </message>
     <message>
         <source>Open</source>
