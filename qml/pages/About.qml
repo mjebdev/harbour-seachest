@@ -60,9 +60,9 @@ Page {
                             horizontalAlignment: Qt.AlignHCenter
                             id: appTitleLabel
                             font.pixelSize: Theme.fontSizeLarge
-                            color: Theme.primaryColor
+                            color: Theme.highlightColor
                             topPadding: Theme.paddingLarge
-                            bottomPadding: Theme.paddingLarge
+                            bottomPadding: Theme.paddingLarge * 2
 
                         }
 
@@ -71,7 +71,7 @@ Page {
                     Separator {
 
                         id: titleSeparator
-                        width: appTitleLabel.width
+                        width: parent.width * 0.66
                         x: (page.width - this.width) * 0.5
                         horizontalAlignment: Separator.Center
                         color: Theme.highlightColor
@@ -86,16 +86,25 @@ Page {
 
                         Label {
 
-                            topPadding: Theme.paddingLarge * 2
+                            topPadding: Theme.paddingLarge
                             width: parent.width
                             id: aboutTextLabel
                             font.pixelSize: Theme.fontSizeExtraSmall
-                            color: Theme.primaryColor
+                            color: Theme.highlightColor
                             wrapMode: Text.Wrap
-                            text: qsTr("An unofficial Dropbox client for Sailfish OS.\n\nby Michael J. Barrett\nmjeb.dev\n\nVersion 0.3\nLicensed under GNU GPLv3\n\nSwedish translation by Åke Engelbrektson");
+                            text: qsTr("An unofficial Dropbox client for Sailfish OS.\n\nby Michael J. Barrett\nmjeb.dev\n\nVersion 0.3.1\nLicensed under GNU GPLv3\n\nSwedish translation by Åke Engelbrektson");
                             bottomPadding: Theme.paddingLarge
 
                         }
+
+                    }
+
+                    Separator {
+
+                        width: parent.width * 0.66
+                        x: (page.width - this.width) * 0.5
+                        horizontalAlignment: Separator.Center
+                        color: Theme.highlightColor
 
                     }
 
@@ -108,9 +117,9 @@ Page {
 
                     Row {
 
-                        width: parent.width * 0.4
-                        x: parent.width * 0.3
-                        height: parent.width * 0.25
+                        width: parent.width * 0.34
+                        x: parent.width * 0.33
+                        height: parent.width * 0.2
 
                         Image {
 
@@ -134,9 +143,9 @@ Page {
                     Row {
 
                         id: linkToKoFiRow
-                        width: parent.width * 0.4
-                        x: parent.width * 0.3
-                        height: parent.width * 0.25
+                        width: parent.width * 0.34
+                        x: parent.width * 0.33
+                        height: parent.width * 0.2
 
                         Image {
 
