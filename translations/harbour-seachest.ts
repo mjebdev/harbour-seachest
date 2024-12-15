@@ -13,7 +13,7 @@
 by Michael J. Barrett
 mjeb.dev
 
-Version 0.3
+Version 0.3.1
 Licensed under GNU GPLv3
 
 Swedish translation by Åke Engelbrektson</source>
@@ -23,20 +23,20 @@ Swedish translation by Åke Engelbrektson</source>
 <context>
     <name>Authorize</name>
     <message>
-        <source>Authorize SeaChest</source>
+        <source>Authorize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Authorization Successful</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>To begin using the app, please authorize it to access your Dropbox account. This will open a new browser window.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Home</name>
-    <message>
-        <source>Reauthorized</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Error reauthorizing. Please try resubmitting your request.</source>
         <translation type="unfinished"></translation>
@@ -102,11 +102,11 @@ Swedish translation by Åke Engelbrektson</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> bytes</source>
+        <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open</source>
+        <source>Download ZIP</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -126,14 +126,6 @@ Swedish translation by Åke Engelbrektson</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Overwrite?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A file with the name &quot;%1&quot; already exists in the Downloads folder.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Unable to rename item. Please try again &amp; avoid entering the same name.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -142,7 +134,11 @@ Swedish translation by Åke Engelbrektson</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Download ZIP</source>
+        <source>A file with the name &quot;%1&quot; already exists in the Downloads folder.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overwrite?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -186,6 +182,10 @@ Swedish translation by Åke Engelbrektson</source>
     </message>
     <message>
         <source>Show warning prior to overwriting an identically named file in Downloads</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Home</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
