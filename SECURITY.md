@@ -10,7 +10,7 @@ As part of the OAuth procedure for authorization and reauthorization, the server
 
 For versions 0.3 and earlier, the OAuth authorization flow was done via a WebView component within the app.
 
-For version 0.3.1 onward, the OAuth authorization flow is done via the SFOS Browser. Upon completion of the authorization flow within the browser, the landing page will include a 'Copy Token' button to copy the access token (along with a refresh token). This JSON string is then retrieved by the app when the user clicks 'Save Token' after returning to the welcome screen. The clipboard is cleared following the retrieval of the string.
+From version 0.3.1 onward, the OAuth authorization flow utilizes the Amber Web Authorization Framework and is done via the SFOS Browser. The RedirectListener component detects the final redirect to localhost that has the required tokens as parameters.
 
 ## Reporting a Vulnerability
 
