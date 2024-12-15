@@ -492,8 +492,6 @@ Page {
 
                                 if (responseCode === 200) {
 
-                                    //downloadNotifier.previewSummary = qsTr("Reauthorized");
-                                    //downloadNotifier.publish();
                                     console.log("Reauthorized.");
                                     var responseParsed = JSON.parse(responseText);
                                     settings.accessKey = responseParsed.access_token;
