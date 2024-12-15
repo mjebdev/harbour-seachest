@@ -108,6 +108,9 @@ Page {
 
                     onClicked: {
 
+                        folderToList = "";
+                        folderToListName = qsTr("Home");
+                        folderToListPath = "";
                         settings.accessKey = "";
                         settings.refreshToken = "";
                         settings.sync();
