@@ -44,20 +44,8 @@ Page {
                     var responseParsed = JSON.parse(responseText);
                     settings.accessKey = responseParsed.access_token;
                     settings.sync();
-                    notificationMain.previewSummary = qsTr("Reauthorized");
-                    notificationMain.publish();
-
-                    // folderToList should still be the same value? -- no chance for user to have changed it, swipe back destroys page anyway, nothing to tap on
-                    // without list of items etc.
+                    console.log("Reauthorized.");
                     listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey);
-
-                }
-
-                else if (responseCode === 301) {
-
-                    console.log("Response code is 301 and the responseText is: " + responseText);
-                    folderRefresh(responseText + settings.refreshToken);
-                    //moreLeft = true;
 
                 }
 
@@ -228,6 +216,7 @@ Page {
 
                     case 401: {
 
+                        console.log("Response code 401. Response text: " + responseText);
                         // Need a way to keep saved the most recent request?
                         folderRefresh("https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken);
                         moreLeft = true; // Keep indicator spinning even though not listing any new items.
@@ -415,6 +404,7 @@ Page {
 
                     folderToList = "";
                     folderToListName = qsTr("Home");
+                    folderToListPath = "";
                     pageStack.clear();
                     pageStack.push(Qt.resolvedUrl("Home.qml"), null, PageStackAction.Immediate);
 
@@ -502,8 +492,9 @@ Page {
 
                                 if (responseCode === 200) {
 
-                                    downloadNotifier.previewSummary = qsTr("Reauthorized");
-                                    downloadNotifier.publish();
+                                    //downloadNotifier.previewSummary = qsTr("Reauthorized");
+                                    //downloadNotifier.publish();
+                                    console.log("Reauthorized.");
                                     var responseParsed = JSON.parse(responseText);
                                     settings.accessKey = responseParsed.access_token;
                                     settings.sync();
@@ -536,15 +527,7 @@ Page {
                                         break;
 
                                     }
-/* -- was needed when redirect may have been necessary using mjeb.dev - to evennode or digitalocean url.
-                                    case 301: {
 
-                                        console.log("Response code is 301 and the responseText is: " + responseText);
-                                        folderRefresh(responseText + settings.refreshToken); // URL from 301 redirect will be the responseText
-                                        break;
-
-                                    }
-*/
                                     case 400: {
 
                                         downloadNotifier.previewSummary = qsTr("Bad input parameter. Error copied.");
@@ -760,6 +743,26 @@ Page {
 
                                 Label {
 
+                                    Component.onCompleted: {
+
+                                        if (itemTag === "file") {
+
+                                            const bytes = itemSize;
+                                            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+                                            if (bytes == 0) text = '0 B';
+
+                                            else {
+
+                                                var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+                                                if (i == 0) text = bytes + ' ' + sizes[i];
+                                                else text = (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+
+                                            }
+
+                                        }
+
+                                    }
+
                                     width: parent.width
                                     height: parent.height
                                     verticalAlignment: "AlignVCenter"
@@ -767,7 +770,7 @@ Page {
                                     font.pixelSize: Theme.fontSizeExtraSmall
                                     color: Theme.secondaryColor
                                     leftPadding: Theme.paddingSmall
-                                    text: itemSize + qsTr(" bytes")
+                                    //text: itemSize + qsTr(" bytes")
 
                                 }
 
