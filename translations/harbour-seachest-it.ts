@@ -13,15 +13,18 @@
 by Michael J. Barrett
 mjeb.dev
 
-Version 0.3.1
+Version 0.4
 Licensed under GNU GPLv3
 
-Swedish translation by Åke Engelbrektson</source>
+Swedish translation by Åke Engelbrektson
+
+Italian translation by Legacychimera247</source>
         <translation>Un client non ufficiale di Dropbox per Sailfish OS.
 
 sviluppato da Michael J. Barrett
+mjeb.dev
 
-Versione 0.3.1
+Versione 0.4
 Sotto licenza GNU GPLv3
 
 Traduzione svedese di Åke Engelbrektson
@@ -32,6 +35,10 @@ Traduzione italiana di Legacychimera247</translation>
 <context>
     <name>Authorize</name>
     <message>
+        <source>To begin using the app, please authorize it to access your Dropbox account. This will open a new browser window.</source>
+        <translation>Per iniziare ad usare l&apos;app, per favore autorizza l&apos;accesso al tuo account Dropbox. Questo farà aprire una nuova finestra.</translation>
+    </message>
+    <message>
         <source>Authorize</source>
         <translation>Autorizza</translation>
     </message>
@@ -39,16 +46,20 @@ Traduzione italiana di Legacychimera247</translation>
         <source>Authorization Successful</source>
         <translation>Autorizzazione Riuscita</translation>
     </message>
-    <message>
-        <source>To begin using the app, please authorize it to access your Dropbox account. This will open a new browser window.</source>
-        <translation>Per iniziare ad usare l&apos;app, per favore autorizza l&apos;accesso al tuo account Dropbox. Questo farà aprire una nuova finestra.</translation>
-    </message>
 </context>
 <context>
     <name>Home</name>
     <message>
         <source>Error reauthorizing. Please try resubmitting your request.</source>
         <translation>Errore nella re-autorizzazione. Per favore riprova.</translation>
+    </message>
+    <message>
+        <source>Error - Conflict with an existing folder path. Please choose a different name and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating folder - Code %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Bad input parameter. Error copied.</source>
@@ -69,6 +80,10 @@ Traduzione italiana di Legacychimera247</translation>
     <message>
         <source>Home</source>
         <translation>Pagina iniziale</translation>
+    </message>
+    <message>
+        <source>Create Folder</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Upload in progress</source>
@@ -127,12 +142,20 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Rename</translation>
     </message>
     <message>
+        <source>Create Link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Delete Folder</source>
         <translation>Elimina cartella</translation>
     </message>
     <message>
         <source>Delete File</source>
         <translation>Elimina file</translation>
+    </message>
+    <message>
+        <source>4-hour link copied to clipboard.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unable to rename item. Please try again &amp; avoid entering the same name.</source>
@@ -143,12 +166,28 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Impossibile eliminare l&apos;oggetto. Codice di errore 409.</translation>
     </message>
     <message>
-        <source>A file with the name &quot;%1&quot; already exists in the Downloads folder.</source>
-        <translation>Un file con il nome &quot;%1&quot; è già esistente nella cartella degli scaricamenti.</translation>
+        <source>Unable to create link. Error code 409.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected error - Code </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A file with the name &quot;%1&quot; already exists in the destination folder.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Overwrite?</source>
         <translation>Sovrascrivi?</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Untitled</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -166,12 +205,12 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Azione per scaricare il file</translation>
     </message>
     <message>
-        <source>Press &amp; hold for other options</source>
-        <translation>Tieni premuto per altre opzioni</translation>
+        <source>Press &amp; hold for all options</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Tap for other options</source>
-        <translation>Premi per altre opzioni</translation>
+        <source>Tap for all options</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Tap</source>
@@ -182,6 +221,22 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Tieni premuto</translation>
     </message>
     <message>
+        <source>Downloads</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show warning prior to overwriting a file on device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save files in the Downloads folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Currently set to </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Authorization</source>
         <translation>Autorizzazione</translation>
     </message>
@@ -190,12 +245,12 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Elimina Chiave D&apos;accesso</translation>
     </message>
     <message>
-        <source>Show warning prior to overwriting an identically named file in Downloads</source>
-        <translation>Mostra un&apos;avvertenza prima di sovrascrivere un file con lo stesso nome negli Scaricamenti</translation>
-    </message>
-    <message>
         <source>Home</source>
         <translation>Pagina iniziale</translation>
+    </message>
+    <message>
+        <source>Save files in</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -209,14 +264,6 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Errore nella re-autorizzazione. Per favore riprova.</translation>
     </message>
     <message>
-        <source>Uploading </source>
-        <translation>Caricamento </translation>
-    </message>
-    <message>
-        <source>Downloading </source>
-        <translation>Scaricamento </translation>
-    </message>
-    <message>
         <source>Error - File does not exist.</source>
         <translation>Errore - Il file non esiste.</translation>
     </message>
@@ -227,6 +274,14 @@ Traduzione italiana di Legacychimera247</translation>
     <message>
         <source>Other error: %1. Copied to clipboard.</source>
         <translation>Altro errore: %1. Copiato negli appunti.</translation>
+    </message>
+    <message>
+        <source>Uploading </source>
+        <translation>Caricamento </translation>
+    </message>
+    <message>
+        <source>Downloading </source>
+        <translation>Scaricamento </translation>
     </message>
 </context>
 </TS>
