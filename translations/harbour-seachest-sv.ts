@@ -13,23 +13,31 @@
 by Michael J. Barrett
 mjeb.dev
 
-Version 0.3.1
+Version 0.4
 Licensed under GNU GPLv3
-    
-Swedish translation by Åke Engelbrektson</source>
+
+Swedish translation by Åke Engelbrektson
+
+Italian translation by Legacychimera247</source>
         <translation>En inofficiell Dropbox-klient för Sailfish OS.
 
 av Michael J. Barrett
 mjeb.dev
 
-Version 0.3.1
+Version 0.4
 Licensierad under GNU GPLv3
-    
-Svensk översättning av Åke Engelbrektson</translation>
+
+Svensk översättning av Åke Engelbrektson
+
+Italiensk översättning av Legacychimera247</translation>
     </message>
 </context>
 <context>
     <name>Authorize</name>
+    <message>
+        <source>To being using the app, please authorize it to access your Dropbox account. This will open a new browser window.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Authorize</source>
         <translation>Auktorisera</translation>
@@ -42,12 +50,16 @@ Svensk översättning av Åke Engelbrektson</translation>
 <context>
     <name>Home</name>
     <message>
-        <source>Reauthorized</source>
-        <translation>Återauktoriserad</translation>
-    </message>
-    <message>
         <source>Error reauthorizing. Please try resubmitting your request.</source>
         <translation>Det gick inte att auktorisera om. Försök att skicka begäran igen.</translation>
+    </message>
+    <message>
+        <source>Error - Conflict with an existing folder path. Please choose a different name and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating folder - Code %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Bad input parameter. Error copied.</source>
@@ -70,6 +82,10 @@ Svensk översättning av Åke Engelbrektson</translation>
         <translation>Hem</translation>
     </message>
     <message>
+        <source>Create Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Upload in progress</source>
         <translation>Uppladdning pågår</translation>
     </message>
@@ -78,8 +94,8 @@ Svensk översättning av Åke Engelbrektson</translation>
         <translation>Ladda upp</translation>
     </message>
     <message>
-        <source>Error refreshing token: </source>
-        <translation>Fel vid uppdatering av token: </translation>
+        <source>Error refreshing token - </source>
+        <translation>Fel vid uppdatering av token - </translation>
     </message>
     <message>
         <source>Access to this feature was denied.</source>
@@ -114,16 +130,20 @@ Svensk översättning av Åke Engelbrektson</translation>
         <translation>Öppna</translation>
     </message>
     <message>
-        <source>Download</source>
-        <translation>Ladda ner</translation>
-    </message>
-    <message>
         <source>Download ZIP</source>
         <translation>Ladda ner ZIP</translation>
     </message>
     <message>
+        <source>Download</source>
+        <translation>Ladda ner</translation>
+    </message>
+    <message>
         <source>Rename</source>
         <translation>Byt namn</translation>
+    </message>
+    <message>
+        <source>Create Link</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Delete Folder</source>
@@ -134,12 +154,40 @@ Svensk översättning av Åke Engelbrektson</translation>
         <translation>Ta bort fil</translation>
     </message>
     <message>
+        <source>4-hour link copied to clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to rename item. Please try again &amp; avoid entering the same name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete item. Error code 409.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to create link. Error code 409.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected error - Code </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A file with the name &quot;%1&quot; already exists in the destination folder.</source>
+        <translation>En fil med namnet &quot;%1&quot; finns redan i målmappen.</translation>
+    </message>
+    <message>
         <source>Overwrite?</source>
         <translation>Skriva över?</translation>
     </message>
     <message>
-        <source>A file with the name &quot;%1&quot; already exists in the Downloads folder.</source>
-        <translation>En fil med namnet &quot;%1&quot; finns redan i mappen Nedladdningar.</translation>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Untitled</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -157,16 +205,12 @@ Svensk översättning av Åke Engelbrektson</translation>
         <translation>Åtgärd för att ladda ner fil</translation>
     </message>
     <message>
-        <source>Press &amp; hold for other options</source>
-        <translation>Långtryck för andra alternativ</translation>
+        <source>Press &amp; hold for all options</source>
+        <translation>Långtryck för alla alternativ</translation>
     </message>
     <message>
-        <source>Show warning prior to overwriting an identically named file in Downloads</source>
-        <translation>Visa varning innan en fil med samma namn skrivs över i Nedladdningar</translation>
-    </message>
-    <message>
-        <source>Tap for other options</source>
-        <translation>Tryck för andra alternativ</translation>
+        <source>Tap for all options</source>
+        <translation>Tryck för alla alternativ</translation>
     </message>
     <message>
         <source>Tap</source>
@@ -177,12 +221,36 @@ Svensk översättning av Åke Engelbrektson</translation>
         <translation>Långtryck</translation>
     </message>
     <message>
+        <source>Downloads</source>
+        <translation>Nedladdningar</translation>
+    </message>
+    <message>
+        <source>Show warning prior to overwriting a file on device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save files in the Downloads folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Currently set to </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Authorization</source>
         <translation>Auktorisering</translation>
     </message>
     <message>
         <source>Erase Access Key</source>
         <translation>Radera åtkomstnyckel</translation>
+    </message>
+    <message>
+        <source>Home</source>
+        <translation>Hem</translation>
+    </message>
+    <message>
+        <source>Save files in</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -194,6 +262,18 @@ Svensk översättning av Åke Engelbrektson</translation>
     <message>
         <source>Error reauthorizing. Please try submitting request again.</source>
         <translation>Det gick inte att auktorisera om. Försök att skicka begäran igen.</translation>
+    </message>
+    <message>
+        <source>Error - File does not exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error - Unable to open file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Other error: %1. Copied to clipboard.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Uploading </source>
