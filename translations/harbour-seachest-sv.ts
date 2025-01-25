@@ -11,7 +11,6 @@
         <source>An unofficial Dropbox client for Sailfish OS.
 
 by Michael J. Barrett
-mjeb.dev
 
 Version 0.4
 Licensed under GNU GPLv3
@@ -22,7 +21,6 @@ Italian translation by Legacychimera247</source>
         <translation>En inofficiell Dropbox-klient för Sailfish OS.
 
 av Michael J. Barrett
-mjeb.dev
 
 Version 0.4
 Licensierad under GNU GPLv3
