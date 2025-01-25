@@ -11,7 +11,6 @@
         <source>An unofficial Dropbox client for Sailfish OS.
 
 by Michael J. Barrett
-mjeb.dev
 
 Version 0.4
 Licensed under GNU GPLv3
