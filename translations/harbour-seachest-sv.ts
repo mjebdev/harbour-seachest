@@ -34,7 +34,7 @@ Italiensk översättning av Legacychimera247</translation>
     <name>Authorize</name>
     <message>
         <source>To being using the app, please authorize it to access your Dropbox account. This will open a new browser window.</source>
-        <translation type="unfinished"></translation>
+        <translation>För att använda appen måste du ge den åtkomst till ditt Dropbox-konto. Detta öppnar ett nytt webbläsarfönster.</translation>
     </message>
     <message>
         <source>Authorize</source>
@@ -53,11 +53,11 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
     <message>
         <source>Error - Conflict with an existing folder path. Please choose a different name and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel – Konflikt med en befintlig mappsökväg. Välj ett annat namn och försök igen.</translation>
     </message>
     <message>
         <source>Error creating folder - Code %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte skapa mapp - Kod %1</translation>
     </message>
     <message>
         <source>Bad input parameter. Error copied.</source>
@@ -81,7 +81,7 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
     <message>
         <source>Create Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa mapp</translation>
     </message>
     <message>
         <source>Upload in progress</source>
@@ -141,7 +141,7 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
     <message>
         <source>Create Link</source>
-        <translation type="unfinished"></translation>
+        <translation>Skapa länk</translation>
     </message>
     <message>
         <source>Delete Folder</source>
@@ -153,23 +153,23 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
     <message>
         <source>4-hour link copied to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>4-timmarslänk kopierad till urklipp.</translation>
     </message>
     <message>
         <source>Unable to rename item. Please try again &amp; avoid entering the same name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte byta namn på objektet. Försök igen och undvik samma namn.</translation>
     </message>
     <message>
         <source>Unable to delete item. Error code 409.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan ite ta bort objektet. Felkod 409.</translation>
     </message>
     <message>
         <source>Unable to create link. Error code 409.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan inte skapa länk. Felkod 409</translation>
     </message>
     <message>
         <source>Unexpected error - Code </source>
-        <translation type="unfinished"></translation>
+        <translation>Oväntat fel - Kod </translation>
     </message>
     <message>
         <source>A file with the name &quot;%1&quot; already exists in the destination folder.</source>
@@ -181,11 +181,11 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Namn</translation>
     </message>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>Namnlös</translation>
     </message>
 </context>
 <context>
@@ -224,15 +224,15 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
     <message>
         <source>Show warning prior to overwriting a file on device</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa varning innan en fil skrivs över på enheten</translation>
     </message>
     <message>
         <source>Save files in the Downloads folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara filer i nedladdningsmappen</translation>
     </message>
     <message>
         <source>Currently set to </source>
-        <translation type="unfinished"></translation>
+        <translation>Inställt till </translation>
     </message>
     <message>
         <source>Authorization</source>
@@ -248,7 +248,7 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
     <message>
         <source>Save files in</source>
-        <translation type="unfinished"></translation>
+        <translation>Spara filer i</translation>
     </message>
 </context>
 <context>
@@ -263,15 +263,15 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
     <message>
         <source>Error - File does not exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel - Filen finns inte.</translation>
     </message>
     <message>
         <source>Error - Unable to open file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel - Kan inte öppna filen.</translation>
     </message>
     <message>
         <source>Other error: %1. Copied to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Annat fel: %1. Kopierat till urklipp.</translation>
     </message>
     <message>
         <source>Uploading </source>
