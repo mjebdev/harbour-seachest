@@ -12,6 +12,6 @@ Name=SeaChest
 # Name[de]=SeaChest
 
 [X-Sailjail]
-Permissions=Internet;UserDirs
+Permissions=Internet;UserDirs;RemovableMedia
 OrganizationName=dev.mjeb
 ApplicationName=SeaChest
