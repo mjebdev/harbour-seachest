@@ -8,6 +8,8 @@ Swedish translation by [eson57](https://github.com/eson57)
 <br>Italian translation by [Legacychimera247](https://github.com/Legacychimera247)
 <br>Any assistance with contributing translations is much appreciated!
 
+Tested on SFOS versions 4.6 and 5.0
+
 <h3>Features</h3>
 
 - Downloading of individual files and folders (as of now, just one at a time).
