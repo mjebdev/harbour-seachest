@@ -92,7 +92,7 @@ Page {
                             font.pixelSize: Theme.fontSizeExtraSmall
                             color: Theme.highlightColor
                             wrapMode: Text.Wrap
-                            text: qsTr("An unofficial Dropbox client for Sailfish OS.\n\nby Michael J. Barrett\nmjeb.dev\n\nVersion 0.3.1\nLicensed under GNU GPLv3\n\nSwedish translation by Åke Engelbrektson");
+                            text: qsTr("An unofficial Dropbox client for Sailfish OS.\n\nby Michael J. Barrett\n\nVersion 0.4\nLicensed under GNU GPLv3\n\nSwedish translation by Åke Engelbrektson\n\nItalian translation by Legacychimera247");
                             bottomPadding: Theme.paddingLarge
 
                         }
@@ -165,33 +165,7 @@ Page {
                         }
 
                     }
-/*
-                    Row {
 
-                        id: linkToPayPalRow
-                        width: parent.width * 0.4
-                        x: parent.width * 0.3
-                        height: parent.width * 0.25
-
-                        Image {
-
-                            id: linkToPayPal
-                            source: Theme.colorScheme == Theme.DarkOnLight ? "PayPal_logo_black_cropped_to_content.png" : "PayPal_logo_white_cropped_to_content.png"
-                            fillMode: Image.PreserveAspectFit
-                            width: parent.width
-                            y: (parent.height - height) * 0.5
-
-                            MouseArea {
-
-                                anchors.fill: parent
-                                onClicked: Qt.openUrlExternally("https://www.paypal.me/mjebdev");
-
-                            }
-
-                        }
-
-                    }
-*/
                     Row {
 
                         height: Theme.paddingLarge
@@ -208,3 +182,4 @@ Page {
     }
 
 }
+    
