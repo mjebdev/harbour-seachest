@@ -9,7 +9,7 @@ Name:       harbour-seachest
 # << macros
 
 Summary:    An unofficial Dropbox client for Sailfish OS.
-Version:    0.3.1
+Version:    0.4
 Release:    1
 Group:      Qt/Qt
 License:    GNU GPLv3
@@ -67,3 +67,4 @@ desktop-file-install --delete-original       \
 %{_datadir}/icons/hicolor/*/apps/%{name}.png
 # >> files
 # << files
+  
