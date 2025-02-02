@@ -33,7 +33,6 @@ Page {
                     width: parent.width
                     font.pixelSize: Theme.fontSizeHuge
                     color: Theme.highlightColor
-                    //topPadding: Theme.itemSizeMedium
                     bottomPadding: 0
                     height: parent.height
                     verticalAlignment: Text.AlignBottom
@@ -52,7 +51,7 @@ Page {
                 Label {
 
                     id: appVersionLabel
-                    text: "v0.3.1"
+                    text: "v0.4"
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.secondaryColor
                     width: parent.width
@@ -241,3 +240,4 @@ Page {
     }
 
 }
+    
