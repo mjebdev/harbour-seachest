@@ -53,11 +53,11 @@ Traduzione italiana di Legacychimera247</translation>
     </message>
     <message>
         <source>Error - Conflict with an existing folder path. Please choose a different name and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore - Conflitto con un percorso già esistente. Per favore scegli un nome diverso e riprova.</translation>
     </message>
     <message>
         <source>Error creating folder - Code %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore nel creare la cartella - Codice %1</translation>
     </message>
     <message>
         <source>Bad input parameter. Error copied.</source>
@@ -81,7 +81,7 @@ Traduzione italiana di Legacychimera247</translation>
     </message>
     <message>
         <source>Create Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea Cartella</translation>
     </message>
     <message>
         <source>Upload in progress</source>
@@ -141,7 +141,7 @@ Traduzione italiana di Legacychimera247</translation>
     </message>
     <message>
         <source>Create Link</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea Collegamento</translation>
     </message>
     <message>
         <source>Delete Folder</source>
@@ -153,7 +153,7 @@ Traduzione italiana di Legacychimera247</translation>
     </message>
     <message>
         <source>4-hour link copied to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Collegamento valido 4 ore copiato negli appunti.</translation>
     </message>
     <message>
         <source>Unable to rename item. Please try again &amp; avoid entering the same name.</source>
@@ -165,15 +165,15 @@ Traduzione italiana di Legacychimera247</translation>
     </message>
     <message>
         <source>Unable to create link. Error code 409.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile creare il collegamento. Codice di errore 409.</translation>
     </message>
     <message>
         <source>Unexpected error - Code </source>
-        <translation type="unfinished"></translation>
+        <translation>Errore inaspettato - Codice </translation>
     </message>
     <message>
         <source>A file with the name &quot;%1&quot; already exists in the destination folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Un file con il nome &quot;%1&quot; esiste già nella cartella di destinazione.</translation>
     </message>
     <message>
         <source>Overwrite?</source>
@@ -181,11 +181,11 @@ Traduzione italiana di Legacychimera247</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nome</translation>
     </message>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>Senza titolo</translation>
     </message>
 </context>
 <context>
@@ -204,11 +204,11 @@ Traduzione italiana di Legacychimera247</translation>
     </message>
     <message>
         <source>Press &amp; hold for all options</source>
-        <translation type="unfinished"></translation>
+        <translation>Premi e tieni premuto per tutte le opzioni</translation>
     </message>
     <message>
         <source>Tap for all options</source>
-        <translation type="unfinished"></translation>
+        <translation>Prremi per tutte le opzioni</translation>
     </message>
     <message>
         <source>Tap</source>
@@ -220,19 +220,19 @@ Traduzione italiana di Legacychimera247</translation>
     </message>
     <message>
         <source>Downloads</source>
-        <translation type="unfinished"></translation>
+        <translation>Scaricamenti</translation>
     </message>
     <message>
         <source>Show warning prior to overwriting a file on device</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra un&apos;avvertenza prima di sovrascrivere un file sul dispositivo</translation>
     </message>
     <message>
         <source>Save files in the Downloads folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva file nella cartella degli scaricamenti</translation>
     </message>
     <message>
         <source>Currently set to </source>
-        <translation type="unfinished"></translation>
+        <translation>Attualmente impostato su </translation>
     </message>
     <message>
         <source>Authorization</source>
@@ -248,7 +248,7 @@ Traduzione italiana di Legacychimera247</translation>
     </message>
     <message>
         <source>Save files in</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva file in</translation>
     </message>
 </context>
 <context>
