@@ -1,6 +1,7 @@
 import QtQuick 2.6
 import Sailfish.Silica 1.0
 import Nemo.Notifications 1.0
+import Sailfish.Pickers 1.0
 
 Page {
 
@@ -9,6 +10,7 @@ Page {
 
     SilicaFlickable {
 
+        id: mainFlickable
         anchors.fill: parent
         contentHeight: column.height
 
@@ -32,12 +34,12 @@ Page {
 
             ComboBox {
 
-                label: qsTr("Action to download file")
+                label: qsTr("Action to download a file")
                 id: downloadActionCombo
                 width: parent.width
                 currentIndex: settings.itemTapToDl ? 0 : 1
                 leftMargin: Theme.horizontalPageMargin
-                description: currentIndex === 0 ? qsTr("Press & hold for other options") : qsTr("Tap for other options")
+                description: currentIndex === 0 ? qsTr("Press & hold for all options") : qsTr("Tap for all options")
 
                 menu: ContextMenu {
 
@@ -71,16 +73,56 @@ Page {
 
             }
 
+            SectionHeader {
+
+                text: qsTr("Downloads")
+
+            }
+
             TextSwitch {
 
                 id: overwriteWarningSwitch
-                text: qsTr("Show warning prior to overwriting an identically named file in Downloads");
+                text: qsTr("Show warning prior to overwriting a file on device");
                 checked: settings.overwriteWarning
 
                 onClicked: {
 
                     settings.overwriteWarning = checked;
                     settings.sync();
+
+                }
+
+            }
+
+            TextSwitch {
+
+                id: downloadDestinationSwitch
+                text: qsTr("Save files to the Downloads folder")
+                checked: settings.downloadToDownloads
+                automaticCheck: false
+                description: settings.downloadToDownloads ? "" : qsTr("Currently set to ") + settings.downloadDestination
+
+                onClicked: {
+
+                    //checked = !checked;
+
+                    if (checked) {
+
+                        // open the folder picker
+                        // putting off checking of the switch until folder actually chosen.
+                        pageStack.push(folderPickerPage);
+
+                    }
+
+                    else {
+
+                        checked = true;
+                        description = "";
+                        settings.downloadToDownloads = true;
+                        settings.downloadDestination = defaultDownloadsLocation;
+                        settings.sync();
+
+                    }
 
                 }
 
@@ -118,6 +160,33 @@ Page {
                         pageStack.replace(Qt.resolvedUrl("Authorize.qml"));
 
                     }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    Component {
+
+        id: folderPickerPage
+
+        FolderPickerPage {
+
+            title: qsTr("Save files in") // the default 'Select location' doesn't appear (maybe not enough space?)
+
+            onSelectedPathChanged: { // will use this to eventually de-check the textswitch as this is the only signal that's working.
+
+                if (selectedPath) {
+
+                    console.log("onSelectedPathChanged signal sent");
+                    settings.downloadToDownloads = false;
+                    settings.downloadDestination = selectedPath;
+                    settings.sync();
+                    downloadDestinationSwitch.checked = false;
+                    downloadDestinationSwitch.description = qsTr("Currently set to ") + selectedPath;
 
                 }
 
