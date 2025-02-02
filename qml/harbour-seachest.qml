@@ -17,9 +17,10 @@ ApplicationWindow {
     property string folderToListName: qsTr("Home");
     property string folderToListPath: ""
     property string currentPath: "/"
+    property string defaultDownloadsLocation: mainDownload.getDlFolderPath();
     property bool activeDlTransfer
     property bool activeUlTransfer
-    property int dlTransferOpacity: 0.0
+    //property int dlTransferOpacity: 0.0
     property int ulTransferOpacity: 0.0
 
     onActiveDlTransferChanged: {
@@ -57,6 +58,8 @@ ApplicationWindow {
 
         property string accessKey: ""
         property string refreshToken: ""
+        property string downloadDestination: mainDownload.getDlFolderPath();
+        property bool downloadToDownloads
         property bool uploadToHomeFolder
         property bool itemTapToDl
         property bool showThumbnailForImageFiles: true
@@ -100,7 +103,7 @@ ApplicationWindow {
                     //notificationMain.previewSummary = "Reauthorized"; // no real need for notification when reauthorized, although it can explain longer than normal request time.
                     //notificationMain.publish();
                     console.log("Reauthorization successful.");
-                    downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + downloadModel.get(0).currentDlItemID + "\"}", downloadModel.get(0).currentDlItem, "Bearer " + settings.accessKey);
+                    downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + downloadModel.get(0).currentDlItemID + "\"}", downloadModel.get(0).currentDlItem, "Bearer " + settings.accessKey, settings.downloadDestination);
 
                 }
 /*
@@ -135,7 +138,7 @@ ApplicationWindow {
 
                     case 200:
 
-                        dlTransferOpacity = 0.0;
+                        //dlTransferOpacity = 0.0;
                         notificationMain.previewSummary = "Download of '" + downloadModel.get(0).currentDlItem + "' is complete.";
                         notificationMain.publish();
                         activeDlTransfer = false;
@@ -338,3 +341,4 @@ ApplicationWindow {
     }
 
 }
+    
