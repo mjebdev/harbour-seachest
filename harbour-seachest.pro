@@ -28,6 +28,7 @@ DISTFILES += qml/harbour-seachest.qml \
     rpm/harbour-seachest.yaml \
     translations/*.ts \
     harbour-seachest.desktop \
+    translations/harbour-seachest-it.ts \
     translations/harbour-seachest-sv.ts
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 172x172
