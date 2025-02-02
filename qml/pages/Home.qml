@@ -45,7 +45,7 @@ Page {
                     settings.accessKey = responseParsed.access_token;
                     settings.sync();
                     console.log("Reauthorized.");
-                    listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey);
+                    listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey, "LIST_FOLDER");
 
                 }
 
@@ -57,6 +57,39 @@ Page {
                     console.log("Response code: " + responseCode);
                     console.log("Request type: " + requestType);
                     console.log("Response text: " + responseText);
+
+                }
+
+            }
+
+            else if (requestType == "CREATE_FOLDER") {
+
+                if (responseCode == 200) {
+
+                    // refresh folder view. busy indicator continues running.
+                    listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey, "LIST_FOLDER");
+
+                }
+
+                else {
+
+                    console.log("Error " + responseCode + " - Request type is CREATE_FOLDER - Response text: " + responseText);
+
+                    if (responseText.indexOf("\"error summary\": \"path/conflict/folder" !== 0)) {
+
+                        notificationMain.previewSummary = qsTr("Error - Conflict with an existing folder path. Please choose a different name and try again.");
+                        notificationMain.publish();
+
+                    }
+
+                    else {
+
+                        notificationMain.previewSummary = qsTr("Error creating folder - Code %1").arg(responseCode);
+                        notificationMain.publish();
+
+                    }
+
+                    listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey, "LIST_FOLDER");
 
                 }
 
@@ -182,7 +215,7 @@ Page {
 
                             }
 
-                            var tempClientMod = new Date(parsedResponse.entries[i].client_modified);
+                               var tempClientMod = new Date(parsedResponse.entries[i].client_modified);
                             var tempServerMod = new Date(parsedResponse.entries[i].server_modified);
                             folderListModel.append({itemName: fileName, itemID: parsedResponse.entries[i].id, itemTag: parsedResponse.entries[i][".tag"], itemSize: parsedResponse.entries[i].size, itemPath: parsedResponse.entries[i].path_lower, itemPathDisplay: parsedResponse.entries[i].path_display, serverModified: tempServerMod.toLocaleString(Locale.ShortFormat), clientModified: tempClientMod.toLocaleString(Locale.ShortFormat), typeIsImage: isAnImage, itemIcon: iconString});
 
@@ -190,14 +223,8 @@ Page {
 
                         if (parsedResponse.has_more) {
 
-                            this.listFolderContents("https://api.dropboxapi.com/2/files/list_folder/continue", "{\"cursor\":\"" + parsedResponse.cursor + "\"}", "Bearer " + settings.accessKey);
+                            this.listFolderContents("https://api.dropboxapi.com/2/files/list_folder/continue", "{\"cursor\":\"" + parsedResponse.cursor + "\"}", "Bearer " + settings.accessKey, "LIST_FOLDER");
                             moreLeft = true;
-
-                        }
-
-                        else {
-
-                            console.log("End of entries.");
 
                         }
 
@@ -293,7 +320,7 @@ Page {
 
                     case "DOWNLOAD": {
 
-                        mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", fieldOne, fieldTwo, "Bearer " + settings.accessKey);
+                        mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", fieldOne, fieldTwo, "Bearer " + settings.accessKey, settings.downloadDestination);
                         break;
 
                     }
@@ -347,7 +374,7 @@ Page {
         currentFolderPath = folderToListPath;
         folderListModel.clear();
         listItemsBusy.running = true;
-        listFolderOrUpload.listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey);
+        listFolderOrUpload.listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey, "LIST_FOLDER");
 
     }
 
@@ -358,8 +385,9 @@ Page {
         //leftMargin: Theme.horizontalPageMargin // using x value in each item instead for same reason as below
         //rightMargin: Theme.horizontalPageMargin
         clip: true
+        anchors.fill: parent
         //spacing: Theme.paddingMedium // will use padding rows and BackgroundItem height value instead as it will highlight entire line when tapped
-
+/*
         anchors {
 
             top: page.top
@@ -368,7 +396,7 @@ Page {
             bottom: uploadStatusBar.top
 
         }
-
+*/
         PullDownMenu {
 
             MenuItem {
@@ -407,6 +435,20 @@ Page {
                     folderToListPath = "";
                     pageStack.clear();
                     pageStack.push(Qt.resolvedUrl("Home.qml"), null, PageStackAction.Immediate);
+
+                }
+
+            }
+
+            MenuItem {
+
+                id: createFolderMenu
+                text: qsTr("Create Folder")
+
+                onClicked: {
+
+                    // new page for asking for the folder name.
+                    pageStack.push(createFolderDialog, {"currentPath": currentFolderPath});
 
                 }
 
@@ -506,7 +548,7 @@ Page {
                                 else {
 
                                     console.log("Error when refreshing token.\nResponse code: " + responseCode + "\nResponse text: " + responseText);
-                                    downloadNotifier.previewSummary = qsTr("Error refreshing token: ") + responseCode + " - " + responseText;
+                                    downloadNotifier.previewSummary = qsTr("Error refreshing token - ") + responseCode + " - " + responseText;
                                     downloadNotifier.publish();
 
                                 }
@@ -768,7 +810,6 @@ Page {
                                     font.pixelSize: Theme.fontSizeExtraSmall
                                     color: Theme.secondaryColor
                                     leftPadding: Theme.paddingSmall
-                                    //text: itemSize + qsTr(" bytes")
 
                                 }
 
@@ -785,19 +826,7 @@ Page {
                     }
 
                 }
-/*
-                MenuItem {
-                    
-                    text: qsTr("Properties")
-                    
-                    onClicked: {
-                        
-                        // to new page with file properties
-                        
-                    }
-                    
-                }
-*/
+    
                 MenuItem {
 
                     text: qsTr("Open")
@@ -866,6 +895,20 @@ Page {
 
                 MenuItem {
 
+                    text: qsTr("Create Link")
+                    visible: itemTag == "file"
+
+                    onClicked: {
+
+                        renameOrDeleteBusy.running = true;
+                        renameOrDelete.renameOrDelete("https://api.dropboxapi.com/2/files/get_temporary_link", "{\"path\":\"" + itemID + "\"}", "Bearer " + settings.accessKey, "CREATE_LINK");
+
+                    }
+
+                }
+
+                MenuItem {
+
                     enabled: false
                     height: Theme.paddingLarge
                     //visible: itemTag === "folder" ? false : true
@@ -921,15 +964,6 @@ Page {
 
                             folderListModel.set(index, {"itemName": editText.text});
                             editText.focus = false;
-                            //editText.visible = false;
-                            //editText.text = "";
-                            //delegateItemColumn.visible = true;
-
-                            /* -- if refreshing list from server following the renaming:
-                            listItemsBusy.running = true;
-                            listFolderOrUpload.listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + currentFolderPath + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey);
-                            folderListModel.clear();
-                            */
 
                         }
 
@@ -941,6 +975,17 @@ Page {
                             // may be a better way than below. fieldOne should be the data JSON string
                             if (origRequestType === "DELETE") renameOrDelete("https://api.dropboxapi.com/2/files/delete_v2", fieldOne, "Bearer " + settings.accessKey, origRequestType);
                             else renameOrDelete("https://api.dropboxapi.com/2/files/move_v2", fieldOne, "Bearer " + settings.accessKey, origRequestType); // "RENAME"
+
+                        }
+
+                        else if (requestType == "CREATE_LINK") {
+
+                            var jsonLink = JSON.parse(responseText);
+                            console.log("Link gathered from response: " + jsonLink.link);
+                            Clipboard.text = jsonLink.link;
+                            notificationMain.previewSummary = qsTr("4-hour link copied to clipboard.");
+                            notificationMain.publish();
+                            renameOrDeleteBusy.running = false;
 
                         }
 
@@ -970,7 +1015,8 @@ Page {
                         renameOrDeleteBusy.running = false;
                         editText.focus = false;
                         if (requestType === "RENAME") downloadNotifier.previewSummary = qsTr("Unable to rename item. Please try again & avoid entering the same name.");
-                        else downloadNotifier.previewSummary = qsTr("Unable to delete item. Error code 409.");
+                        else if (requestType === "DELETE" ) downloadNotifier.previewSummary = qsTr("Unable to delete item. Error code 409.");
+                        else downloadNotifier.previewSummary = qsTr("Unable to create link. Error code 409.");
                         downloadNotifier.publish();
                         break;
 
@@ -978,9 +1024,9 @@ Page {
 
                         renameOrDeleteBusy.running = false;
                         editText.focus = false;
-                        downloadNotifier.previewSummary = qsTr("Unexpected error. Code " + responseCode);
+                        downloadNotifier.previewSummary = qsTr("Unexpected error - Code ") + responseCode;
                         downloadNotifier.publish();
-                        console.log("Not 200 or 201--" + responseCode);
+                        console.log("Error code: " + responseCode + "\nResponse text: " + responseText);
 
                     }
 
@@ -990,13 +1036,53 @@ Page {
 
             function startDownload() {
 
-                if (listFolderOrUpload.fileAlreadyExists(itemName) && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName, "fileId": itemID});
+                if (settings.downloadToDownloads) {
+
+                    if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName) && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName, "fileId": itemID});
+
+                    else {
+
+                        downloadModel.set(0, {"currentDlItem": itemName, "currentDlItemID": itemID, "downloadProgressPct": "0%"});
+                        activeDlTransfer = true;
+                        mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + itemID + "\"}", itemName, "Bearer " + settings.accessKey, settings.downloadDestination);
+
+                    }
+
+                }
 
                 else {
 
-                    downloadModel.set(0, {"currentDlItem": itemName, "currentDlItemID": itemID, "downloadProgressPct": "0%"});
-                    activeDlTransfer = true;
-                    mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + itemID + "\"}", itemName, "Bearer " + settings.accessKey);
+                    if (listFolderOrUpload.directoryExists(settings.downloadDestination)) { // incase SD card removed or folder deleted etc.
+
+                        if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName) && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName, "fileId": itemID});
+
+                        else {
+
+                            downloadModel.set(0, {"currentDlItem": itemName, "currentDlItemID": itemID, "downloadProgressPct": "0%"});
+                            activeDlTransfer = true;
+                            mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + itemID + "\"}", itemName, "Bearer " + settings.accessKey, settings.downloadDestination);
+
+                        }
+
+                    }
+
+                    else { // revert to default download folder being system Downloads folder.
+
+                        settings.downloadToDownloads = true;
+                        settings.downloadDestination = defaultDownloadsLocation;
+                        settings.sync();
+
+                        if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName) && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName, "fileId": itemID});
+
+                        else {
+
+                            downloadModel.set(0, {"currentDlItem": itemName, "currentDlItemID": itemID, "downloadProgressPct": "0%"});
+                            activeDlTransfer = true;
+                            mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + itemID + "\"}", itemName, "Bearer " + settings.accessKey, settings.downloadDestination);
+
+                        }
+
+                    }
 
                 }
 
@@ -1004,13 +1090,53 @@ Page {
 
             function startZipDownload() {
 
-                if (listFolderOrUpload.fileAlreadyExists(itemName + ".zip") && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName + ".zip", "fileId": itemID});
+                if (settings.downloadToDownloads) {
+
+                    if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName + ".zip") && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName + ".zip", "fileId": itemID});
+
+                    else {
+
+                        downloadModel.set(0, {"currentDlItem": itemName + ".zip", "currentDlItemID": itemID, "downloadProgressPct": "0%"});
+                        activeDlTransfer = true;
+                        mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download_zip", "{\"path\":\"" + itemID + "\"}", itemName + ".zip", "Bearer " + settings.accessKey, settings.downloadDestination);
+
+                    }
+
+                }
 
                 else {
 
-                    downloadModel.set(0, {"currentDlItem": itemName + ".zip", "currentDlItemID": itemID, "downloadProgressPct": "0%"});
-                    activeDlTransfer = true;
-                    mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download_zip", "{\"path\":\"" + itemID + "\"}", itemName + ".zip", "Bearer " + settings.accessKey);
+                    if (listFolderOrUpload.directoryExists(settings.downloadDestination)) { // incase SD card removed or folder deleted etc.
+
+                        if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName + ".zip") && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName + ".zip", "fileId": itemID});
+
+                        else {
+
+                            downloadModel.set(0, {"currentDlItem": itemName + ".zip", "currentDlItemID": itemID, "downloadProgressPct": "0%"});
+                            activeDlTransfer = true;
+                            mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download_zip", "{\"path\":\"" + itemID + "\"}", itemName + ".zip", "Bearer " + settings.accessKey, settings.downloadDestination);
+
+                        }
+
+                    }
+
+                    else {
+
+                        settings.downloadToDownloads = true;
+                        settings.downloadDestination = defaultDownloadsLocation;
+                        settings.sync();
+
+                        if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName + ".zip") && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName + ".zip", "fileId": itemID});
+
+                        else {
+
+                            downloadModel.set(0, {"currentDlItem": itemName + ".zip", "currentDlItemID": itemID, "downloadProgressPct": "0%"});
+                            activeDlTransfer = true;
+                            mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download_zip", "{\"path\":\"" + itemID + "\"}", itemName + ".zip", "Bearer " + settings.accessKey, settings.downloadDestination);
+
+                        }
+
+                    }
 
                 }
 
@@ -1206,123 +1332,13 @@ Page {
 
     }
 
-    ListView   {
-
-        id: uploadStatusBar
-        model: uploadModel
-        height: visible ? contentHeight + Theme.paddingMedium : 0
-        visible: false //activeUlTransfer
-        opacity: ulTransferOpacity
-        interactive: false
-        clip: true
-        anchors.bottom: downloadStatusBar.top
-        anchors.left: page.left
-        anchors.right: page.right
-
-        onVisibleChanged: {
-
-            if (visible) ulTransferOpacity = 1.0;
-
-        }
-
-        onOpacityChanged: {
-
-            if (opacity <= 0.1) activeUlTransfer = false;
-
-        }
-
-        Behavior on opacity {
-
-            FadeAnimator {
-
-                duration: 150
-
-            }
-
-        }
-
-        delegate: ProgressBar {
-
-            Component.onCompleted: {
-
-                listViewHeight = height; // will only ever be one delegate but need to assign height to ListView...
-                console.log("listViewHeight = " + listViewHeight);
-
-            }
-
-            id: uploadProgressSlider
-            width: parent.width
-            enabled: false
-            value: uploadProgress
-            valueText: uploadProgressPct
-            label: "Uploading " + currentUlItem
-
-        }
-
-    }
-
-    ListView   {
-
-        id: downloadStatusBar
-        model: downloadModel
-        height: visible ? contentHeight + Theme.paddingMedium : 0
-        visible: false //mainAppWindow.activeDlTransfer
-        opacity: mainAppWindow.dlTransferOpacity
-        interactive: false
-        clip: true
-        anchors.bottom: page.bottom
-        anchors.left: page.left
-        anchors.right: page.right
-
-        onVisibleChanged: {
-
-            if (visible) mainAppWindow.dlTransferOpacity = 1.0;
-
-        }
-
-        onOpacityChanged: {
-
-            if (opacity <= 0.1) mainAppWindow.activeDlTransfer = false;
-
-        }
-
-        Behavior on opacity {
-
-            FadeAnimator {
-
-                duration: 150
-
-            }
-
-        }
-
-        delegate: ProgressBar {
-
-            Component.onCompleted: {
-
-                listViewHeight = height; // will only ever be one delegate but need to assign height to ListView...
-                console.log("listViewHeight = " + listViewHeight);
-
-            }
-
-            id: downloadProgressSlider
-            width: parent.width
-            enabled: false
-            value: downloadProgress
-            valueText: downloadProgressPct
-            label: "Downloading " + currentDlItem
-
-        }
-
-    }
-
     Component {
 
         id: filePickerPage
 
         FilePickerPage {
 
-            title: "Upload"
+            title: qsTr("Upload")
 
             onSelectedContentPropertiesChanged: {
 
@@ -1360,7 +1376,7 @@ Page {
 
                     width: parent.width - (Theme.horizontalPageMargin * 2)
                     x: Theme.horizontalPageMargin
-                    text: qsTr("A file with the name \"%1\" already exists in the Downloads folder.").arg(fileName);
+                    text: qsTr("A file with the name \"%1\" already exists in the destination folder.").arg(fileName);
                     color: Theme.highlightColor
                     wrapMode: Text.WordWrap
                     bottomPadding: Theme.paddingLarge
@@ -1385,7 +1401,63 @@ Page {
 
                 downloadModel.set(0, {"currentDlItem": fileName, "currentDlItemID": fileId, "downloadProgressPct": "0%"});
                 activeDlTransfer = true;
-                mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + fileId + "\"}", fileName, "Bearer " + settings.accessKey);
+                mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + fileId + "\"}", fileName, "Bearer " + settings.accessKey, settings.downloadDestination);
+
+            }
+
+        }
+
+    }
+
+    Component {
+
+        id: createFolderDialog
+
+        Dialog {
+
+            id: dialog
+            property string currentPath
+
+            Column {
+
+                width: parent.width
+
+                DialogHeader { }
+
+                Label {
+
+                    width: parent.width - (Theme.horizontalPageMargin * 2)
+                    x: Theme.horizontalPageMargin
+                    text: qsTr("Create Folder");
+                    color: Theme.highlightColor
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pixelSize: Theme.fontSizeLarge
+                    topPadding: Theme.paddingLarge
+                    bottomPadding: Theme.paddingLarge * 2
+
+                }
+
+                TextField {
+
+                    id: folderNameText
+                    width: parent.width - (Theme.horizontalPageMargin * 2)
+                    x: Theme.horizontalPageMargin
+                    label: qsTr("Name")
+                    placeholderText: qsTr("Untitled")
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pixelSize: Theme.fontSizeLarge
+                    wrapMode: TextInput.Wrap
+
+                }
+
+            }
+
+            onAccepted: {
+
+                listItemsBusy.running = true;
+                folderListModel.clear();
+                if (folderNameText.text == "") listFolderOrUpload.listFolderContents("https://api.dropboxapi.com/2/files/create_folder_v2", "{\"path\":\"" + currentFolderPath + "/" + qsTr("Untitled") + "\"}", "Bearer " + settings.accessKey, "CREATE_FOLDER");
+                else listFolderOrUpload.listFolderContents("https://api.dropboxapi.com/2/files/create_folder_v2", "{\"path\":\"" + currentFolderPath + "/" + folderNameText.text + "\"}", "Bearer " + settings.accessKey, "CREATE_FOLDER");
 
             }
 
