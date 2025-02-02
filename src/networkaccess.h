@@ -7,7 +7,9 @@
 #include <QNetworkReply>
 #include <QFile>
 #include <QSaveFile>
+#include <QDir>
 #include <QStandardPaths>
+#include <QString>
 #include <QDebug>
 
 class NetworkAccess : public QNetworkAccessManager {
@@ -28,8 +30,9 @@ public:
     QString cacheFolder = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
     QFile checkFile;
     QSaveFile myFile;
+    QDir myDir;
 
-    Q_INVOKABLE void listFolderContents(QString actionUrl, QByteArray folderPath, QByteArray bearerSessionKey) {
+    Q_INVOKABLE void listFolderContents(QString actionUrl, QByteArray folderPath, QByteArray bearerSessionKey, QString requestType) {
 
         request.setUrl(actionUrl);
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -40,21 +43,9 @@ public:
 
         connect(reply, &QNetworkReply::finished, [=]() {
 
-            //if (reply->error() == QNetworkReply::NoError) {
-
-                responseText = reply->readAll();
-                responseCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-                finished(responseText, responseCode, "LIST_FOLDER");
-
-            //}
-
-            //else { // handle error
-
-                //responseText = reply->readAll();
-                //responseCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-                //finished(responseText, responseCode, "POST");
-
-            //}
+            responseText = reply->readAll();
+            responseCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+            finished(responseText, responseCode, requestType);
 
         });
 
@@ -125,9 +116,11 @@ public:
 
     }
 
-    Q_INVOKABLE void downloadFile(QString actionUrl, QByteArray filePath, QByteArray saveFileAs, QByteArray bearerSessionKey) {
+    Q_INVOKABLE void downloadFile(QString actionUrl, QByteArray filePath, QByteArray saveFileAs, QByteArray bearerSessionKey, QString downloadDestination) {
 
-        myFile.setFileName(downloadsFolder + "/" + saveFileAs);
+
+
+        myFile.setFileName(downloadDestination + "/" + saveFileAs);
         request.setUrl(actionUrl);
         request.setHeader(QNetworkRequest::ContentTypeHeader, "text/plain");
         //request.setRawHeader("Accept", "application/json");
@@ -150,14 +143,15 @@ public:
 
             if (reply->error() == QNetworkReply::NoError) {
 
-                const QString downloadsFolder = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
-                QSaveFile myFile(downloadsFolder + "/" + saveFileAs);
+                QSaveFile myFile(downloadDestination + "/" + saveFileAs);
 
                 if (myFile.open(QIODevice::WriteOnly)) qInfo() << "Attempt to open myFile succeeded.";
 
                 else {
 
                     qInfo() << "Attempt to open myFile failed.";
+                    qInfo() << "Download destination:";
+                    qInfo() << downloadDestination;
                     return;
 
                 }
@@ -227,19 +221,24 @@ public:
 
     }
 
-    Q_INVOKABLE bool fileAlreadyExists(QString partialFileUrl) {
-
-        // need to change to passing the entire URL
-        // determine folder location on QML side
-        // will allow for easier customization later by User i.e. using Documents instead, or another specified folder.
+    Q_INVOKABLE bool fileAlreadyExists(QString fileUrl) {
 
         //const QString downloadsFolder = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
         //QFile myFile(downloadsFolder + "/" + partialFileUrl);
 
-        checkFile.setFileName(downloadsFolder + "/" + partialFileUrl);
+        //if (downloadDestination == "DOWNLOADS") checkFile.setFileName(downloadsFolder + "/" + partialFileUrl);
+        //else checkFile.setFileName(downloadDestination + "/" + partialFileUrl);
+        checkFile.setFileName(fileUrl);
         //if (myFile.exists()) return true;
         //else return false;
         return checkFile.exists();
+
+    }
+
+    Q_INVOKABLE bool directoryExists(QString path) {
+
+        if (myDir.cd(path)) return myDir.exists();
+        else return false;
 
     }
 
@@ -258,6 +257,12 @@ public:
             finished(responseText, responseCode, "TOKEN_REFRESH");
 
         });
+
+    }
+
+    Q_INVOKABLE QString getDlFolderPath() {
+
+        return downloadsFolder; // QML StandardPaths type only for Qt 6.2 onward -- for now using this method.
 
     }
 
