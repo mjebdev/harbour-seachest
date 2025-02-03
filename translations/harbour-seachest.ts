@@ -218,7 +218,7 @@ Italian translation by Legacychimera247</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save files in the Downloads folder</source>
+        <source>Save files to the Downloads folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

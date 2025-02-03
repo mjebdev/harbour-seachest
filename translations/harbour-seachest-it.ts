@@ -199,7 +199,7 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Interfaccia</translation>
     </message>
     <message>
-        <source>Action to download file</source>
+        <source>Action to download a file</source>
         <translation>Azione per scaricare il file</translation>
     </message>
     <message>
@@ -227,7 +227,7 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Mostra un&apos;avvertenza prima di sovrascrivere un file sul dispositivo</translation>
     </message>
     <message>
-        <source>Save files in the Downloads folder</source>
+        <source>Save files to the Downloads folder</source>
         <translation>Salva file nella cartella degli scaricamenti</translation>
     </message>
     <message>
