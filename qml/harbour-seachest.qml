@@ -59,7 +59,7 @@ ApplicationWindow {
         property string accessKey: ""
         property string refreshToken: ""
         property string downloadDestination: mainDownload.getDlFolderPath();
-        property bool downloadToDownloads
+        property bool downloadToDownloads: true
         property bool uploadToHomeFolder
         property bool itemTapToDl
         property bool showThumbnailForImageFiles: true
@@ -125,8 +125,8 @@ ApplicationWindow {
                     console.log("Response text: " + responseText);
                     notificationMain.previewSummary = qsTr("Error reauthorizing. Please try submitting request again.");
                     notificationMain.publish();
-                    downloadModel.clear();
                     activeDlTransfer = false;
+                    downloadModel.clear();
 
                 }
 
@@ -138,12 +138,10 @@ ApplicationWindow {
 
                     case 200:
 
-                        //dlTransferOpacity = 0.0;
                         notificationMain.previewSummary = "Download of '" + downloadModel.get(0).currentDlItem + "' is complete.";
                         notificationMain.publish();
                         activeDlTransfer = false;
                         downloadModel.clear();
-                        //downloadModel.set(0, {"downloadedSoFar": 0, "downloadTotal": 0, "downloadProgress": 0.0, "downloadProgressPct": "0%"});
                         break;
 
                     case 401:
@@ -199,9 +197,8 @@ ApplicationWindow {
                     console.log("Response text: " + responseText);
                     notificationMain.previewSummary = qsTr("Error reauthorizing. Please try submitting request again.");
                     notificationMain.publish();
-                    ulTransferOpacity = 0.0;
+                    activeUlTransfer = false;
                     uploadModel.clear();
-                    //uploadModel.set(0, {"uploadProgress": 0.0, "uploadProgressPct": "0%"});
 
                 }
 
@@ -211,9 +208,9 @@ ApplicationWindow {
 
                 if (responseCode === 200) {
 
-                    ulTransferOpacity = 0.0;
                     notificationMain.previewSummary = "Upload of '" + uploadModel.get(0).currentUlItem + "' was successful.";
                     notificationMain.publish();
+                    activeUlTransfer = false;
                     uploadModel.clear();
 
                 }
@@ -266,7 +263,7 @@ ApplicationWindow {
 
         id: downloadModel
 
-        Component.onCompleted: clear(); // avoid existing blank ListElement here if uploading something first or vice versa.
+        Component.onCompleted: clear();
 
         ListElement {
 
@@ -293,8 +290,7 @@ ApplicationWindow {
     DockedPanel {
 
         id: downloadsUploadsPanel
-        // open: some way to check if any downloads currently
-        open: false //--to begin with at least.    activeDlTransfer // || activeUlTransfer
+        open: false
         dock: Dock.Bottom
         width: parent.width
         height: downloadsListview.height + uploadsListview.height
@@ -309,7 +305,6 @@ ApplicationWindow {
             delegate: ProgressBar {
 
                 width: parent.width
-                //height: downloadSlider.height
                 value: uploadProgress
                 valueText: uploadProgressPct
                 label: qsTr("Uploading ") + currentUlItem
@@ -329,7 +324,6 @@ ApplicationWindow {
             delegate: ProgressBar {
 
                 width: parent.width
-                //height: downloadSlider.height
                 value: downloadProgress
                 valueText: downloadProgressPct
                 label: qsTr("Downloading ") + currentDlItem
@@ -341,4 +335,3 @@ ApplicationWindow {
     }
 
 }
-    
