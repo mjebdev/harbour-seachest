@@ -51,7 +51,7 @@ Page {
                 Label {
 
                     id: appVersionLabel
-                    text: "v0.4"
+                    text: "v0.4.1"
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.secondaryColor
                     width: parent.width
@@ -196,7 +196,7 @@ Page {
         <img src='https://mjeb.dev/seachest/harbour-seachest.png' alt='App icon'>
         <br>
         <br>
-        <p style='text-align:center'>This browser window or tab can be closed.</p>
+        <p style='text-align:center'>This browser tab can be closed.</p>
         </body>
         </html>
         \r\n\r\n"
@@ -240,4 +240,3 @@ Page {
     }
 
 }
-    
