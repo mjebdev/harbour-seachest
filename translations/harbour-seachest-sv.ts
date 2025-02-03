@@ -199,7 +199,7 @@ Italiensk översättning av Legacychimera247</translation>
         <translation>Gränssnitt</translation>
     </message>
     <message>
-        <source>Action to download file</source>
+        <source>Action to download a file</source>
         <translation>Åtgärd för att ladda ner fil</translation>
     </message>
     <message>
@@ -227,7 +227,7 @@ Italiensk översättning av Legacychimera247</translation>
         <translation>Visa varning innan en fil skrivs över på enheten</translation>
     </message>
     <message>
-        <source>Save files in the Downloads folder</source>
+        <source>Save files to the Downloads folder</source>
         <translation>Spara filer i nedladdningsmappen</translation>
     </message>
     <message>
