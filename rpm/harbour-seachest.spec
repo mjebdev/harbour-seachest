@@ -18,7 +18,6 @@ Source0:    %{name}-%{version}.tar.bz2
 Source100:  harbour-seachest.yaml
 Requires:   sailfishsilica-qt5 >= 0.10.9
 Requires:   amber-web-authorization
-Requires:   libamberwebauthorization
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5Qml)
