@@ -11,7 +11,6 @@ Page {
     property string currentDownload
     property string localHeaderName
     property string currentFolderPath
-    property string authorizationToken
     property string selectedLocalFile
     property string selectedFileName
     property int listViewHeight
@@ -188,11 +187,11 @@ Page {
                                     isAnImage = false;
                                     break;
                                 case "TEXT":
-                                    iconString = "image://theme/icon-m-file-pdf-dark";
+                                    iconString = "image://theme/icon-m-file-document-dark";
                                     isAnImage = false;
                                     break;
                                 case ".ZIP":
-                                    iconString = "image://theme/icon-m-file-pdf-dark";
+                                    iconString = "image://theme/icon-m-file-archive-folder";
                                     isAnImage = false;
                                     break;
                                 case ".MP3":
@@ -200,7 +199,7 @@ Page {
                                     isAnImage = false;
                                     break;
                                 case ".M4A":
-                                    iconString = "image://theme/icon-m-file-pdf-dark";
+                                    iconString = "image://theme/icon-m-file-audio";
                                     isAnImage = false;
                                     break;
                                 case ".APK":
@@ -819,6 +818,7 @@ Page {
 
                                 width: parent.width
                                 height: parent.height * 0.05
+
                             }
 
                         }
@@ -826,7 +826,7 @@ Page {
                     }
 
                 }
-    
+
                 MenuItem {
 
                     text: qsTr("Open")
@@ -841,11 +841,11 @@ Page {
                 }
 
                 MenuItem {
-                    
+
                     text: itemTag === "folder" ? qsTr("Download ZIP") : qsTr("Download")
-                    
+
                     onClicked: {
-                        
+
                         if (itemTag === "folder") {
 
                             if (!activeDlTransfer) startZipDownload(); // nothing will happen if download is in progress
@@ -871,9 +871,9 @@ Page {
                             }
 
                         }
-                        
+
                     }
-                    
+
                 }
 
                 MenuItem {
@@ -924,9 +924,9 @@ Page {
                     }
 
                 }
-                
+
                 MenuItem {
-                    
+
                     text: itemTag === "folder" ? qsTr("Delete Folder") : qsTr("Delete File")
                     color: Theme.errorColor
 
@@ -940,7 +940,7 @@ Page {
                         });
 
                     }
-                    
+
                 }
 
             }
