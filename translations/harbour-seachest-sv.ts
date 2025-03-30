@@ -12,7 +12,7 @@
 
 by Michael J. Barrett
 
-Version 0.4
+Version 0.5
 Licensed under GNU GPLv3
 
 Swedish translation by Åke Engelbrektson
@@ -22,7 +22,7 @@ Italian translation by Legacychimera247</source>
 
 av Michael J. Barrett
 
-Version 0.4
+Version 0.5
 Licensierad under GNU GPLv3
 
 Svensk översättning av Åke Engelbrektson
@@ -47,10 +47,6 @@ Italiensk översättning av Legacychimera247</translation>
 </context>
 <context>
     <name>Home</name>
-    <message>
-        <source>Error reauthorizing. Please try resubmitting your request.</source>
-        <translation>Det gick inte att auktorisera om. Försök att skicka begäran igen.</translation>
-    </message>
     <message>
         <source>Error - Conflict with an existing folder path. Please choose a different name and try again.</source>
         <translation>Fel – Konflikt med en befintlig mappsökväg. Välj ett annat namn och försök igen.</translation>
@@ -92,10 +88,6 @@ Italiensk översättning av Legacychimera247</translation>
         <translation>Ladda upp</translation>
     </message>
     <message>
-        <source>Error refreshing token - </source>
-        <translation>Fel vid uppdatering av token - </translation>
-    </message>
-    <message>
         <source>Access to this feature was denied.</source>
         <translation>Åtkomst till den här funktionen nekades.</translation>
     </message>
@@ -110,6 +102,10 @@ Italiensk översättning av Legacychimera247</translation>
     <message>
         <source>Error saving thumbnail to cache folder.</source>
         <translation>Det gick inte att spara miniatyrbilden i cachemappen.</translation>
+    </message>
+    <message>
+        <source>Error reauthorizing - </source>
+        <translation>Det gick inte att auktorisera om - </translation>
     </message>
     <message>
         <source>Modified on server:</source>
@@ -189,6 +185,113 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
 </context>
 <context>
+    <name>Search</name>
+    <message>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search in &quot;%1&quot; only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bad input parameter. Error copied.</source>
+        <translation>Felaktig indataparameter. Felet har kopierats.</translation>
+    </message>
+    <message>
+        <source>Access to this feature was denied.</source>
+        <translation>Åtkomst till den här funktionen nekades.</translation>
+    </message>
+    <message>
+        <source>Endpoint-specific error. Error copied to clipboard.</source>
+        <translation>Slutpunktsspecifikt fel. Felet kopierades till Urklipp.</translation>
+    </message>
+    <message>
+        <source>Too many requests.</source>
+        <translation>För många förfrågningar.</translation>
+    </message>
+    <message>
+        <source>Error saving thumbnail to cache folder.</source>
+        <translation>Det gick inte att spara miniatyrbilden i cachemappen.</translation>
+    </message>
+    <message>
+        <source>Error reauthorizing - </source>
+        <translation>Det gick inte att auktorisera om - </translation>
+    </message>
+    <message>
+        <source>Modified on server:</source>
+        <translation>Ändrad på servern:</translation>
+    </message>
+    <message>
+        <source>Modified on client:</source>
+        <translation>Ändrad på klienten:</translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation>Storlek:</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation>Öppna</translation>
+    </message>
+    <message>
+        <source>Download ZIP</source>
+        <translation>Ladda ner ZIP</translation>
+    </message>
+    <message>
+        <source>Download</source>
+        <translation>Ladda ner</translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation>Byt namn</translation>
+    </message>
+    <message>
+        <source>Create Link</source>
+        <translation>Skapa länk</translation>
+    </message>
+    <message>
+        <source>Delete Folder</source>
+        <translation>Ta bort mapp</translation>
+    </message>
+    <message>
+        <source>Delete File</source>
+        <translation>Ta bort fil</translation>
+    </message>
+    <message>
+        <source>4-hour link copied to clipboard.</source>
+        <translation>4-timmarslänk kopierad till urklipp.</translation>
+    </message>
+    <message>
+        <source>Unable to rename item. Please try again &amp; avoid entering the same name.</source>
+        <translation>Kan inte byta namn på objektet. Försök igen och undvik samma namn.</translation>
+    </message>
+    <message>
+        <source>Unable to delete item. Error code 409.</source>
+        <translation>Kan ite ta bort objektet. Felkod 409.</translation>
+    </message>
+    <message>
+        <source>Unable to create link. Error code 409.</source>
+        <translation>Kan inte skapa länk. Felkod 409</translation>
+    </message>
+    <message>
+        <source>Unexpected error - Code </source>
+        <translation>Oväntat fel - Kod </translation>
+    </message>
+    <message>
+        <source>A file with the name &quot;%1&quot; already exists in the destination folder.</source>
+        <translation>En fil med namnet &quot;%1&quot; finns redan i målmappen.</translation>
+    </message>
+    <message>
+        <source>Overwrite?</source>
+        <translation>Skriva över?</translation>
+    </message>
+</context>
+<context>
     <name>Settings</name>
     <message>
         <source>Settings</source>
@@ -235,6 +338,14 @@ Italiensk översättning av Legacychimera247</translation>
         <translation>Inställt till </translation>
     </message>
     <message>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show option to search current folder only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Authorization</source>
         <translation>Auktorisering</translation>
     </message>
@@ -262,6 +373,10 @@ Italiensk översättning av Legacychimera247</translation>
         <translation>Det gick inte att auktorisera om. Försök att skicka begäran igen.</translation>
     </message>
     <message>
+        <source>Reauthorizing and resubmitting upload request...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Error - File does not exist.</source>
         <translation>Fel - Filen finns inte.</translation>
     </message>
@@ -270,8 +385,8 @@ Italiensk översättning av Legacychimera247</translation>
         <translation>Fel - Kan inte öppna filen.</translation>
     </message>
     <message>
-        <source>Other error: %1. Copied to clipboard.</source>
-        <translation>Annat fel: %1. Kopierat till urklipp.</translation>
+        <source>Error code %1 - Description copied to clipboard</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Uploading </source>
