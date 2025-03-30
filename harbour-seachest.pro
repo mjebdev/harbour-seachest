@@ -21,6 +21,7 @@ DISTFILES += qml/harbour-seachest.qml \
     qml/pages/About.qml \
     qml/pages/Authorize.qml \
     qml/pages/Home.qml \
+    qml/pages/Search.qml \
     qml/pages/Settings.qml \
     rpm/harbour-seachest.changes.in \
     rpm/harbour-seachest.changes.run.in \
@@ -41,7 +42,10 @@ CONFIG += sailfishapp_i18n
 # planning to localize your app, remember to comment out the
 # following TRANSLATIONS line. And also do not forget to
 # modify the localized app name in the the .desktop file.
-# TRANSLATIONS += translations/harbour-seachest-de.ts
+TRANSLATIONS += translations/harbour-seachest-sv.ts \
+    translations/harbour-seachest-it.ts
 
 HEADERS += \
     src/networkaccess.h
+
+
