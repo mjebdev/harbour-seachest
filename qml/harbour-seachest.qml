@@ -16,12 +16,9 @@ ApplicationWindow {
     property string folderToList: ""
     property string folderToListName: qsTr("Home");
     property string folderToListPath: ""
-    property string currentPath: "/"
     property string defaultDownloadsLocation: mainDownload.getDlFolderPath();
     property bool activeDlTransfer
     property bool activeUlTransfer
-    //property int dlTransferOpacity: 0.0
-    property int ulTransferOpacity: 0.0
 
     onActiveDlTransferChanged: {
 
@@ -65,6 +62,7 @@ ApplicationWindow {
         property bool showThumbnailForImageFiles: true
         property bool autorename: true
         property bool overwriteWarning: true
+        property bool justSearchFolder: true
 
     }
 
@@ -78,84 +76,55 @@ ApplicationWindow {
             var dlTransferProgressPctStr = (dlTransferProgress * 100).toFixed(0).toString() + "%";
             downloadModel.set(0, {"downloadedSoFar": dlProgress, "downloadTotal": dlTotal, "downloadProgress": dlTransferProgress, "downloadProgressPct":  dlTransferProgressPctStr});
 
-            /*
-            transferProgressSlider.value = dlProgress / dlTotal;
-            var dlPercentage = ((dlProgress / dlTotal) * 100).toFixed(0);
-            transferProgressSlider.valueText = dlPercentage + "\%";
-            */
-
         }
 
         onFinished: {
 
-            //transferStatusBar.opacity = 0.0;
-            //transferProgressSlider.value = 0;
-            //transferProgressSlider.valueText = "0%";
-            //transferStatusBar.visible = false;
+            switch (responseCode) {
 
-            if (requestType === "TOKEN_REFRESH") {
+                case 200:
 
-                if (responseCode === 200 ) {
-
-                    var responseParsed = JSON.parse(responseText);
-                    settings.accessKey = responseParsed.access_token;
-                    settings.sync();
-                    //notificationMain.previewSummary = "Reauthorized"; // no real need for notification when reauthorized, although it can explain longer than normal request time.
-                    //notificationMain.publish();
-                    console.log("Reauthorization successful.");
-                    downloadFile("https://content.dropboxapi.com/2/files/download", "{\"path\":\"" + downloadModel.get(0).currentDlItemID + "\"}", downloadModel.get(0).currentDlItem, "Bearer " + settings.accessKey, settings.downloadDestination);
-
-                }
-/*
-                else if (responseCode === 301) {
-
-                    // refresh token with URL included in 301 headers.
-                    // used when domain redirected to evennode; have since moved to digitalocean who have domain also so no redirect needed.
-                    console.log("Response code is 301 and the responseText is: " + responseText);
-                    transferRefresh("DOWNLOAD", responseText + settings.refreshToken, "{\"path\":\"" + downloadModel.get(0).currentDlItemID + "\"}", downloadModel.get(0).currentDlItem);
-
-                }
-*/
-                else {
-
-                    // handle app not reauthorizing.
-
-                    console.log("Response code: " + responseCode);
-                    console.log("Request type: " + requestType);
-                    console.log("Response text: " + responseText);
-                    notificationMain.previewSummary = qsTr("Error reauthorizing. Please try submitting request again.");
+                    notificationMain.previewSummary = "Download of '" + downloadModel.get(0).currentDlItem + "' is complete.";
                     notificationMain.publish();
                     activeDlTransfer = false;
                     downloadModel.clear();
+                    break;
 
-                }
+                case 401:
+
+                    // may need to change this approach at some point as would like to have up to four simultaneous downloads (not a problem with uploads as that'll stay at one).
+                    // need to look at regular finished function having extra parameters?
+                    tokenRefresh("DOWNLOAD", "https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken, "{\"path\":\"" + downloadModel.get(0).currentDlItemID + "\"}", downloadModel.get(0).currentDlItem);
+                    //transferRefresh("DOWNLOAD", "https://nodejs.mjeb.dev/seachest/refresh", "{\"path\":\"" + downloadModel.get(0).currentDlItemID + "\"}", downloadModel.get(0).currentDlItem);
+                    break;
+
+                case 999:
+
+                    console.log("Unknown error - response text: " + responseText);
+                    notificationMain.previewSummary = responseText;
+                    notificationMain.publish();
+
+            }
+
+        }
+
+        onRefreshFinished: {
+
+            if (responseCode === 200) {
+
+                var responseParsed = JSON.parse(responseText);
+                settings.accessKey = responseParsed.access_token;
+                settings.sync();
+                downloadFile("https://content.dropboxapi.com/2/files/download", origData, origSupplemental, "Bearer " + settings.accessKey, settings.downloadDestination);
 
             }
 
             else {
 
-                switch (responseCode) {
-
-                    case 200:
-
-                        notificationMain.previewSummary = "Download of '" + downloadModel.get(0).currentDlItem + "' is complete.";
-                        notificationMain.publish();
-                        activeDlTransfer = false;
-                        downloadModel.clear();
-                        break;
-
-                    case 401:
-
-                        // first need to get redirect url from the permanent link.
-                        transferRefresh("DOWNLOAD", "https://nodejs.mjeb.dev/seachest/refresh", "{\"path\":\"" + downloadModel.get(0).currentDlItemID + "\"}", downloadModel.get(0).currentDlItem);
-                        break;
-
-                    case 999:
-
-                        notificationMain.previewSummary = responseText;
-                        notificationMain.publish();
-
-                }
+                notificationMain.previewSummary = qsTr("Error reauthorizing. Please try submitting request again.");
+                notificationMain.publish();
+                activeDlTransfer = false;
+                downloadModel.clear();
 
             }
 
@@ -177,65 +146,69 @@ ApplicationWindow {
 
         onFinished: {
 
-            if (requestType === "TOKEN_REFRESH") {
+            if (responseCode === 200) {
 
-                if (responseCode === 200) {
-
-                    var responseParsed = JSON.parse(responseText);
-                    settings.accessKey = responseParsed.access_token;
-                    settings.sync();
-                    notificationMain.previewSummary = "Reauthorized";
-                    notificationMain.publish();
-                    upload("https://content.dropboxapi.com/2/files/upload", uploadModel.get(0).currentUlItemPath, "{\"path\":\"" + uploadModel.get(0).currentLocalFolderPath + "/" + uploadModel.get(0).currentUlItem + "\"}", "Bearer " + settings.accessKey);
-
-                }
-
-                else {
-
-                    console.log("Error reauthorizing: " + responseCode);
-                    console.log("Request type: " + requestType);
-                    console.log("Response text: " + responseText);
-                    notificationMain.previewSummary = qsTr("Error reauthorizing. Please try submitting request again.");
-                    notificationMain.publish();
-                    activeUlTransfer = false;
-                    uploadModel.clear();
-
-                }
+                notificationMain.previewSummary = "Upload of '" + uploadModel.get(0).currentUlItem + "' was successful.";
+                notificationMain.publish();
+                activeUlTransfer = false;
+                uploadModel.clear();
 
             }
 
-            else { // still need way to reauthorize or refresh token if uploading and access has expired.
+            else if (responseCode === 401) {
 
-                if (responseCode === 200) {
+                uploadModel.set(0, {"uploadProgress": 0.0, "uploadProgressPct": "0%"});
+                // Adding notification as file will need to be re-uploaded.
+                notificationMain.previewSummary = qsTr("Reauthorizing and resubmitting upload request...");
+                notificationMain.publish();
+                tokenRefresh("UPLOAD", "https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken, responseText, "{}");
 
-                    notificationMain.previewSummary = "Upload of '" + uploadModel.get(0).currentUlItem + "' was successful.";
-                    notificationMain.publish();
-                    activeUlTransfer = false;
-                    uploadModel.clear();
+            }
 
-                }
+            else if (responseText === "Error - File does not exist.") {
 
-                else if (responseText === "Error - File does not exist.") {
+                notificationMain.previewSummary = qsTr("Error - File does not exist.");
+                notificationMain.publish();
 
-                    notificationMain.previewSummary = qsTr("Error - File does not exist.");
-                    notificationMain.publish();
+            }
 
-                }
+            else if (responseText === "Error - Unable to open file.") {
 
-                else if (responseText === "Error - Unable to open file.") {
+                notificationMain.previewSummary = qsTr("Error - Unable to open file.");
+                notificationMain.publish();
 
-                    notificationMain.previewSummary = qsTr("Error - Unable to open file.");
-                    notificationMain.publish();
+            }
 
-                }
+            else {
 
-                else {
+                notificationMain.previewSummary = qsTr("Error code %1. Description copied to clipboard.").arg(responseCode);
+                console.log("Response code: " + responseCode + "\nResponse text: " + responseText);
+                Clipboard.text = responseText;
+                notificationMain.publish();
 
-                    notificationMain.previewSummary = qsTr("Other error: %1. Copied to clipboard.").arg(responseCode);
-                    Clipboard.text = responseText;
-                    notificationMain.publish();
+            }
 
-                }
+        }
+
+        onRefreshFinished: {
+
+            if (responseCode === 200) {
+
+                var responseParsed = JSON.parse(responseText);
+                settings.accessKey = responseParsed.access_token;
+                settings.sync();
+                upload("https://content.dropboxapi.com/2/files/upload", uploadModel.get(0).currentUlItemPath, origData, "Bearer " + settings.accessKey);
+
+            }
+
+            else {
+
+                console.log("Error reauthorizing: " + responseCode);
+                console.log("Response text: " + responseText);
+                notificationMain.previewSummary = qsTr("Error reauthorizing. Please try submitting request again.");
+                notificationMain.publish();
+                activeUlTransfer = false;
+                uploadModel.clear();
 
             }
 
