@@ -188,15 +188,15 @@ Italiensk översättning av Legacychimera247</translation>
     <name>Search</name>
     <message>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Sök</translation>
     </message>
     <message>
         <source>Search in &quot;%1&quot; only</source>
-        <translation type="unfinished"></translation>
+        <translation>Sök endast i &quot;%1&quot;</translation>
     </message>
     <message>
         <source>No results</source>
-        <translation type="unfinished"></translation>
+        <translation>Inga träffar</translation>
     </message>
     <message>
         <source>Bad input parameter. Error copied.</source>
@@ -339,11 +339,11 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Sök</translation>
     </message>
     <message>
         <source>Show option to search current folder only</source>
-        <translation type="unfinished"></translation>
+        <translation>Visa alternativ för att endast söka i aktuell mapp</translation>
     </message>
     <message>
         <source>Authorization</source>
@@ -374,7 +374,7 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
     <message>
         <source>Reauthorizing and resubmitting upload request...</source>
-        <translation type="unfinished"></translation>
+        <translation>Auktorisera om och skicka en ny uppladdningsbegäran...</translation>
     </message>
     <message>
         <source>Error - File does not exist.</source>
@@ -386,7 +386,7 @@ Italiensk översättning av Legacychimera247</translation>
     </message>
     <message>
         <source>Error code %1 - Description copied to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Felkod %1 - Beskrivning kopierad till urklipp</translation>
     </message>
     <message>
         <source>Uploading </source>
