@@ -51,7 +51,7 @@ Page {
                 Label {
 
                     id: appVersionLabel
-                    text: "v0.4.1"
+                    text: "v0.5"
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.secondaryColor
                     width: parent.width
@@ -118,6 +118,7 @@ Page {
                     color: Theme.highlightColor
                     topPadding: Theme.paddingLarge * 2
                     bottomPadding: Theme.paddingLarge * 3
+                    horizontalAlignment: Text.AlignHCenter
 
                 }
 
