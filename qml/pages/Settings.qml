@@ -104,15 +104,7 @@ Page {
 
                 onClicked: {
 
-                    //checked = !checked;
-
-                    if (checked) {
-
-                        // open the folder picker
-                        // putting off checking of the switch until folder actually chosen.
-                        pageStack.push(folderPickerPage);
-
-                    }
+                    if (checked) pageStack.push(folderPickerPage);
 
                     else {
 
@@ -123,6 +115,27 @@ Page {
                         settings.sync();
 
                     }
+
+                }
+
+            }
+
+            SectionHeader {
+
+                text: qsTr("Search")
+
+            }
+
+            TextSwitch {
+
+                id: justSearchFolderSwitch
+                text: qsTr("Show option to search only current folder")
+                checked: settings.justSearchFolder
+
+                onCheckedChanged: {
+
+                    settings.justSearchFolder = checked;
+                    settings.sync();
 
                 }
 
@@ -175,9 +188,9 @@ Page {
 
         FolderPickerPage {
 
-            title: qsTr("Save files in") // the default 'Select location' doesn't appear (maybe not enough space?)
+            title: qsTr("Save files in")
 
-            onSelectedPathChanged: { // will use this to eventually de-check the textswitch as this is the only signal that's working.
+            onSelectedPathChanged: {
 
                 if (selectedPath) {
 
@@ -206,3 +219,4 @@ Page {
     }
 
 }
+    
