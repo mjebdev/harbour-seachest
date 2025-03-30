@@ -12,7 +12,7 @@
 
 by Michael J. Barrett
 
-Version 0.4
+Version 0.5
 Licensed under GNU GPLv3
 
 Swedish translation by Åke Engelbrektson
@@ -22,7 +22,7 @@ Italian translation by Legacychimera247</source>
 
 sviluppato da Michael J. Barrett
 
-Versione 0.4
+Versione 0.5
 Sotto licenza GNU GPLv3
 
 Traduzione svedese di Åke Engelbrektson
@@ -47,10 +47,6 @@ Traduzione italiana di Legacychimera247</translation>
 </context>
 <context>
     <name>Home</name>
-    <message>
-        <source>Error reauthorizing. Please try resubmitting your request.</source>
-        <translation>Errore nella re-autorizzazione. Per favore riprova.</translation>
-    </message>
     <message>
         <source>Error - Conflict with an existing folder path. Please choose a different name and try again.</source>
         <translation>Errore - Conflitto con un percorso già esistente. Per favore scegli un nome diverso e riprova.</translation>
@@ -92,10 +88,6 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Caricamento</translation>
     </message>
     <message>
-        <source>Error refreshing token: </source>
-        <translation>Errore nel ricaricare il token: </translation>
-    </message>
-    <message>
         <source>Access to this feature was denied.</source>
         <translation>L&apos;accesso a questa funzione è stato negato.</translation>
     </message>
@@ -110,6 +102,10 @@ Traduzione italiana di Legacychimera247</translation>
     <message>
         <source>Error saving thumbnail to cache folder.</source>
         <translation>Errore salvataggio anteprima nella cache.</translation>
+    </message>
+    <message>
+        <source>Error reauthorizing - </source>
+        <translation>Errore nella re-autorizzazione - </translation>
     </message>
     <message>
         <source>Modified on server:</source>
@@ -189,6 +185,113 @@ Traduzione italiana di Legacychimera247</translation>
     </message>
 </context>
 <context>
+    <name>Search</name>
+    <message>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search in &quot;%1&quot; only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bad input parameter. Error copied.</source>
+        <translation>Paramentro input sbagliato. Errore copiato.</translation>
+    </message>
+    <message>
+        <source>Access to this feature was denied.</source>
+        <translation>L&apos;accesso a questa funzione è stato negato.</translation>
+    </message>
+    <message>
+        <source>Endpoint-specific error. Error copied to clipboard.</source>
+        <translation>Errore specifico dell&apos;endpoint. Errore copiato negli appunti.</translation>
+    </message>
+    <message>
+        <source>Too many requests.</source>
+        <translation>Troppe richieste.</translation>
+    </message>
+    <message>
+        <source>Error saving thumbnail to cache folder.</source>
+        <translation>Errore salvataggio anteprima nella cache.</translation>
+    </message>
+    <message>
+        <source>Error reauthorizing - </source>
+        <translation>Errore nella re-autorizzazione - </translation>
+    </message>
+    <message>
+        <source>Modified on server:</source>
+        <translation>Modificato sul server:</translation>
+    </message>
+    <message>
+        <source>Modified on client:</source>
+        <translation>Modificato sul client:</translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation>Dimensione:</translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation>Apri</translation>
+    </message>
+    <message>
+        <source>Download ZIP</source>
+        <translation>Scarica ZIP</translation>
+    </message>
+    <message>
+        <source>Download</source>
+        <translation>Scarica</translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation>Rename</translation>
+    </message>
+    <message>
+        <source>Create Link</source>
+        <translation>Crea Collegamento</translation>
+    </message>
+    <message>
+        <source>Delete Folder</source>
+        <translation>Elimina cartella</translation>
+    </message>
+    <message>
+        <source>Delete File</source>
+        <translation>Elimina file</translation>
+    </message>
+    <message>
+        <source>4-hour link copied to clipboard.</source>
+        <translation>Collegamento valido 4 ore copiato negli appunti.</translation>
+    </message>
+    <message>
+        <source>Unable to rename item. Please try again &amp; avoid entering the same name.</source>
+        <translation>Impossibile rinminare l&apos;oggetto. Per favore riprova e prova ad inserire un altro nome.</translation>
+    </message>
+    <message>
+        <source>Unable to delete item. Error code 409.</source>
+        <translation>Impossibile eliminare l&apos;oggetto. Codice di errore 409.</translation>
+    </message>
+    <message>
+        <source>Unable to create link. Error code 409.</source>
+        <translation>Impossibile creare il collegamento. Codice di errore 409.</translation>
+    </message>
+    <message>
+        <source>Unexpected error - Code </source>
+        <translation>Errore inaspettato - Codice </translation>
+    </message>
+    <message>
+        <source>A file with the name &quot;%1&quot; already exists in the destination folder.</source>
+        <translation>Un file con il nome &quot;%1&quot; esiste già nella cartella di destinazione.</translation>
+    </message>
+    <message>
+        <source>Overwrite?</source>
+        <translation>Sovrascrivi?</translation>
+    </message>
+</context>
+<context>
     <name>Settings</name>
     <message>
         <source>Settings</source>
@@ -235,6 +338,14 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Attualmente impostato su </translation>
     </message>
     <message>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show option to search current folder only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Authorization</source>
         <translation>Autorizzazione</translation>
     </message>
@@ -262,6 +373,10 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Errore nella re-autorizzazione. Per favore riprova.</translation>
     </message>
     <message>
+        <source>Reauthorizing and resubmitting upload request...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Error - File does not exist.</source>
         <translation>Errore - Il file non esiste.</translation>
     </message>
@@ -270,8 +385,8 @@ Traduzione italiana di Legacychimera247</translation>
         <translation>Errore - Impossibile aprire il file.</translation>
     </message>
     <message>
-        <source>Other error: %1. Copied to clipboard.</source>
-        <translation>Altro errore: %1. Copiato negli appunti.</translation>
+        <source>Error code %1 - Description copied to clipboard</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Uploading </source>
