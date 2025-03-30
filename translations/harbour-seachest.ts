@@ -12,7 +12,7 @@
 
 by Michael J. Barrett
 
-Version 0.4
+Version 0.5
 Licensed under GNU GPLv3
 
 Swedish translation by Åke Engelbrektson
@@ -38,10 +38,6 @@ Italian translation by Legacychimera247</source>
 </context>
 <context>
     <name>Home</name>
-    <message>
-        <source>Error reauthorizing. Please try resubmitting your request.</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Error - Conflict with an existing folder path. Please choose a different name and try again.</source>
         <translation type="unfinished"></translation>
@@ -83,10 +79,6 @@ Italian translation by Legacychimera247</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error refreshing token - </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Access to this feature was denied.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -100,6 +92,10 @@ Italian translation by Legacychimera247</source>
     </message>
     <message>
         <source>Error saving thumbnail to cache folder.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error reauthorizing - </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -180,6 +176,113 @@ Italian translation by Legacychimera247</source>
     </message>
 </context>
 <context>
+    <name>Search</name>
+    <message>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search in &quot;%1&quot; only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bad input parameter. Error copied.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Access to this feature was denied.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Endpoint-specific error. Error copied to clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Too many requests.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error saving thumbnail to cache folder.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error reauthorizing - </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modified on server:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modified on client:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download ZIP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Link</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4-hour link copied to clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to rename item. Please try again &amp; avoid entering the same name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete item. Error code 409.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to create link. Error code 409.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unexpected error - Code </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A file with the name &quot;%1&quot; already exists in the destination folder.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overwrite?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Settings</name>
     <message>
         <source>Settings</source>
@@ -226,6 +329,14 @@ Italian translation by Legacychimera247</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show option to search current folder only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Authorization</source>
         <translation type="unfinished"></translation>
     </message>
@@ -253,6 +364,10 @@ Italian translation by Legacychimera247</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Reauthorizing and resubmitting upload request...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Error - File does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -261,7 +376,7 @@ Italian translation by Legacychimera247</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Other error: %1. Copied to clipboard.</source>
+        <source>Error code %1 - Description copied to clipboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
