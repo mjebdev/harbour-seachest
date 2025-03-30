@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.6
 import Sailfish.Silica 1.0
 import Sailfish.Pickers 1.0
 import NetworkAccess 1.0
@@ -8,12 +8,13 @@ Page {
 
     id: page
     allowedOrientations: Orientation.PortraitMask
+
     property string currentDownload
     property string localHeaderName
     property string currentFolderPath
     property string selectedLocalFile
     property string selectedFileName
-    property int listViewHeight
+    property bool homeFolder
 
     ListModel {
 
@@ -29,44 +30,24 @@ Page {
 
     NetworkAccess {
 
-        id: listFolderOrUpload
+        id: containerRequest
 
         onFinished: {
 
             console.log("responseCode: " + responseCode);
             var moreLeft = false;
 
-            if (requestType === "TOKEN_REFRESH") {
-
-                if (responseCode === 200) {
-
-                    var responseParsed = JSON.parse(responseText);
-                    settings.accessKey = responseParsed.access_token;
-                    settings.sync();
-                    console.log("Reauthorized.");
-                    listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey, "LIST_FOLDER");
-
-                }
-
-                else {
-
-                    // handle app not reauthorizing.
-                    notificationMain.previewSummary = qsTr("Error reauthorizing. Please try resubmitting your request.");
-                    notificationMain.publish();
-                    console.log("Response code: " + responseCode);
-                    console.log("Request type: " + requestType);
-                    console.log("Response text: " + responseText);
-
-                }
-
-            }
-
-            else if (requestType == "CREATE_FOLDER") {
+            if (requestType == "CREATE_FOLDER") {
 
                 if (responseCode == 200) {
 
-                    // refresh folder view. busy indicator continues running.
-                    listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey, "LIST_FOLDER");
+                    postRequest("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey, "LIST_FOLDER");
+
+                }
+
+                else if (responseCode == 401) {
+
+                    tokenRefresh("CREATE_FOLDER", "https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken, responseText, "{}");
 
                 }
 
@@ -88,13 +69,13 @@ Page {
 
                     }
 
-                    listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey, "LIST_FOLDER");
+                    postRequest("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey, "LIST_FOLDER");
 
                 }
 
             }
 
-            else {
+            else { // folder listing request
 
                 switch (responseCode) {
 
@@ -104,7 +85,6 @@ Page {
 
                         for (var i = 0; i < parsedResponse.entries.length; i++) {
 
-                            // Get type -- not included with file list output, will delete if this adds too much time to rendering list. But useful if determining whether to try to get Thumbnail for an image and what icon to use.
                             var fileName = parsedResponse.entries[i].name;
                             var lastFour = "";
                             var iconString = "";
@@ -116,17 +96,7 @@ Page {
                                 isAnImage = false;
 
                             }
-/*
-                            else if (fileName.indexOf(".") == -1) {
 
-                                // Avoiding a filename ending e.g. tiff that is not an image..
-                                // Either a folder or a file with no period, in either case set lastFour/type to: "NONE".
-                                lastFour = "NONE";
-                                iconString = "image://theme/icon-m-file-other-dark"; // Folders with override this with the 'tag' value when list is rendered. Even though string includes 'dark', icon does adjust when light Ambience is set.
-                                isAnImage = false; // Even if it is, needs an extension!
-
-                            }
-*/
                             else {
 
                                 lastFour = parsedResponse.entries[i].name.slice((fileName.length - 4), fileName.length);
@@ -214,7 +184,7 @@ Page {
 
                             }
 
-                               var tempClientMod = new Date(parsedResponse.entries[i].client_modified);
+                            var tempClientMod = new Date(parsedResponse.entries[i].client_modified);
                             var tempServerMod = new Date(parsedResponse.entries[i].server_modified);
                             folderListModel.append({itemName: fileName, itemID: parsedResponse.entries[i].id, itemTag: parsedResponse.entries[i][".tag"], itemSize: parsedResponse.entries[i].size, itemPath: parsedResponse.entries[i].path_lower, itemPathDisplay: parsedResponse.entries[i].path_display, serverModified: tempServerMod.toLocaleString(Locale.ShortFormat), clientModified: tempClientMod.toLocaleString(Locale.ShortFormat), typeIsImage: isAnImage, itemIcon: iconString});
 
@@ -222,7 +192,7 @@ Page {
 
                         if (parsedResponse.has_more) {
 
-                            this.listFolderContents("https://api.dropboxapi.com/2/files/list_folder/continue", "{\"cursor\":\"" + parsedResponse.cursor + "\"}", "Bearer " + settings.accessKey, "LIST_FOLDER");
+                            this.postRequest("https://api.dropboxapi.com/2/files/list_folder/continue", "{\"cursor\":\"" + parsedResponse.cursor + "\"}", "Bearer " + settings.accessKey, "LIST_FOLDER");
                             moreLeft = true;
 
                         }
@@ -243,8 +213,7 @@ Page {
                     case 401: {
 
                         console.log("Response code 401. Response text: " + responseText);
-                        // Need a way to keep saved the most recent request?
-                        folderRefresh("https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken);
+                        tokenRefresh("LIST_FOLDER", "https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken, responseText, "{}");
                         moreLeft = true; // Keep indicator spinning even though not listing any new items.
                         break;
 
@@ -280,7 +249,7 @@ Page {
                         if (responseCode.toString().slice(0, 1) === "5") {
 
                             downloadNotifier.expireTimeout = 2800;
-                            downloadNotifier.previewSummary = "Error on Dropbox Servers. Check status.dropbox.com for details.";
+                            downloadNotifier.previewSummary = "Error on Dropbox servers. Check status.dropbox.com for details.";
                             downloadNotifier.publish();
                             downloadNotifier.expireTimeout = 1800;
 
@@ -300,64 +269,27 @@ Page {
 
             }
 
+            console.log("currentFolderPath is " + currentFolderPath + ".");
+            pageStack.pushAttached(Qt.resolvedUrl("Search.qml"), {"folderName": localHeaderName, "folderPath": currentFolderPath, "homeFolder": homeFolder});
+            // the above was not working when placed in a Component.onCompleted function so placing at the end of a successful-http-request response processing.
             if (moreLeft === false) listItemsBusy.running = false;
 
         }
 
         onRefreshFinished: {
 
-            if (responseCode === 200) {
+            if (responseCode == 200) {
 
                 var responseParsed = JSON.parse(responseText);
                 settings.accessKey = responseParsed.access_token;
                 settings.sync();
-                //notificationMain.previewSummary = "Reauthorized";
-                //notificationMain.publish();
                 console.log("Reauthorized.");
-
-                switch (origRequestType) {
-
-                    case "DOWNLOAD": {
-
-                        mainDownload.downloadFile("https://content.dropboxapi.com/2/files/download", fieldOne, fieldTwo, "Bearer " + settings.accessKey, settings.downloadDestination);
-                        break;
-
-                    }
-
-                    case "UPLOAD": {
-
-                        mainUpload.upload("https://content.dropboxapi.com/2/files/upload", fieldOne, fieldTwo, "Bearer " + settings.accessKey);
-                        break;
-
-                    }
-
-                    case "DELETE": {
-
-                        renameOrDelete("https://api.dropboxapi.com/2/files/delete_v2", fieldOne, "Bearer " + settings.accessKey, "DELETE");
-                        break;
-
-                    }
-
-                    case "RENAME": {
-
-                        // autoRename preference already recorded as part of the data string.
-                        renameOrDelete("https://api.dropboxapi.com/2/files/move_v2", fieldOne, "Bearer " + settings.accessKey, "RENAME");
-
-                    }
-
-                }
+                if (origRequestType == "CREATE_FOLDER") postRequest("https://api.dropboxapi.com/2/files/create_folder_v2", origData, "Bearer " + settings.accessKey, origRequestType);
+                else postRequest("https://api.dropboxapi.com/2/files/list_folder", origData, "Bearer " + settings.accessKey, origRequestType);
 
             }
 
-            else {
-
-                console.log("Error refreshing token: " + responseCode);
-                console.log("Original request type: " + origRequestType);
-                console.log("Response text: " + responseText);
-                notificationMain.previewSummary = qsTr("Error reauthorizing. Please try resubmitting your request.");
-                notificationMain.publish();
-
-            }
+            else console.log("Error reauthorizing in containerRequest. responseCode: " + responseCode + "\nresponseText: " + responseText);
 
         }
 
@@ -365,15 +297,19 @@ Page {
 
     Component.onCompleted: {
 
-        // folder ID will be passed
-        // spinner until http request complete, ask for contents of folder ID.
+        if (folderToList === "") {
 
-        if (folderToList === "") homeOrRefreshMenu.text = qsTr("Refresh");
+            homeFolder = true;
+            homeOrRefreshMenu.text = qsTr("Refresh");
+
+        }
+
         localHeaderName = folderToListName;
+        console.log("folderToList is " + folderToList + ".");
         currentFolderPath = folderToListPath;
         folderListModel.clear();
         listItemsBusy.running = true;
-        listFolderOrUpload.listFolderContents("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey, "LIST_FOLDER");
+        containerRequest.postRequest("https://api.dropboxapi.com/2/files/list_folder", "{\"path\":\"" + folderToList + "\", \"include_non_downloadable_files\": false}", "Bearer " + settings.accessKey, "LIST_FOLDER");
 
     }
 
@@ -381,21 +317,9 @@ Page {
 
         id: listView
         model: folderListModel
-        //leftMargin: Theme.horizontalPageMargin // using x value in each item instead for same reason as below
-        //rightMargin: Theme.horizontalPageMargin
         clip: true
         anchors.fill: parent
-        //spacing: Theme.paddingMedium // will use padding rows and BackgroundItem height value instead as it will highlight entire line when tapped
-/*
-        anchors {
 
-            top: page.top
-            left: page.left
-            right: page.right
-            bottom: uploadStatusBar.top
-
-        }
-*/
         PullDownMenu {
 
             MenuItem {
@@ -446,7 +370,6 @@ Page {
 
                 onClicked: {
 
-                    // new page for asking for the folder name.
                     pageStack.push(createFolderDialog, {"currentPath": currentFolderPath});
 
                 }
@@ -474,7 +397,7 @@ Page {
 
         }
 
-        delegate: ListItem { // using columns and rows even though more cumbersome because TextField's leftItem not aligned with text when the field is read-only and no option for leftItem with the Label object.
+        delegate: ListItem {
 
             id: listItem
             contentHeight: delegateItemRow.height
@@ -482,7 +405,7 @@ Page {
 
             BusyIndicator {
 
-                id: renameOrDeleteBusy
+                id: itemRequestBusy
                 running: false
                 anchors.centerIn: parent
                 size: BusyIndicatorSize.Small
@@ -529,93 +452,89 @@ Page {
 
                         onFinished: {
 
-                            if (requestType === "TOKEN_REFRESH") {
+                            switch (responseCode) {
 
-                                if (responseCode === 200) {
+                                case 200: {
 
-                                    console.log("Reauthorized.");
-                                    var responseParsed = JSON.parse(responseText);
-                                    settings.accessKey = responseParsed.access_token;
-                                    settings.sync();
-                                    // Resubmit request for the thumbnail.
-                                    var keepEmSeparated = new Date().getTime();
-                                    var fileString = itemName + keepEmSeparated.toString() + ".jpeg"; // Need to assign as string first?
-                                    getThumbnail.downloadThumbnail("https://content.dropboxapi.com/2/files/get_thumbnail_v2", "{\"resource\":{\".tag\":\"path\",\"path\":\"" + itemID + "\"}, \"size\": \"w256h256\"}", fileString, "Bearer " + settings.accessKey);
+                                    // Assign file url to image value etc.
+                                    thumbnailImage.source = Qt.resolvedUrl(requestType);
+                                    loadThumbnailBusy.running = false;
+                                    break;
 
                                 }
 
-                                else {
+                                case 400: {
 
-                                    console.log("Error when refreshing token.\nResponse code: " + responseCode + "\nResponse text: " + responseText);
-                                    downloadNotifier.previewSummary = qsTr("Error refreshing token - ") + responseCode + " - " + responseText;
+                                    downloadNotifier.previewSummary = qsTr("Bad input parameter. Error copied.");
+                                    downloadNotifier.publish();
+                                    Clipboard.text = responseText;
+                                    break;
+
+                                }
+
+                                case 401: {
+
+                                    tokenRefresh("THUMBNAIL", "https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken, responseText, "{}");
+                                    break;
+
+                                }
+
+                                case 403: {
+
+                                    downloadNotifier.previewSummary = qsTr("Access to this feature was denied.");
+                                    downloadNotifier.publish();
+                                    break;
+
+                                }
+
+                                case 409: {
+
+                                    downloadNotifier.previewSummary = qsTr("Endpoint-specific error. Error copied to clipboard.");
+                                    downloadNotifier.publish();
+                                    Clipboard.text = responseText;
+                                    break;
+
+                                }
+
+                                case 429: {
+
+                                    downloadNotifier.previewSummary = qsTr("Too many requests.");
+                                    downloadNotifier.publish();
+                                    break;
+
+                                }
+
+                                case 999: {
+
+                                    downloadNotifier.previewSummary = qsTr("Error saving thumbnail to cache folder.");
                                     downloadNotifier.publish();
 
                                 }
 
                             }
 
+                        }
+
+                        onRefreshFinished: {
+
+                            if (responseCode === 200) {
+
+                                console.log("onRefreshFinished - responseCode 200. Retrying the upload function with new accessKey.")
+                                var responseParsed = JSON.parse(responseText);
+                                settings.accessKey = responseParsed.access_token;
+                                settings.sync();
+                                var keepEmSeparated = new Date().getTime();
+                                console.log("testing access to model values -- itemName: " + itemName);
+                                var fileString = itemName + keepEmSeparated.toString() + ".jpeg";
+                                downloadThumbnail("https://content.dropboxapi.com/2/files/get_thumbnail_v2", origData, fileString, "Bearer " + settings.accessKey);
+
+                            }
+
                             else {
 
-                                switch (responseCode) {
-
-                                    case 200: {
-
-                                        // Assign file url to image value etc.
-                                        thumbnailImage.source = Qt.resolvedUrl(requestType);
-                                        loadThumbnailBusy.running = false;
-                                        break;
-
-                                    }
-
-                                    case 400: {
-
-                                        downloadNotifier.previewSummary = qsTr("Bad input parameter. Error copied.");
-                                        downloadNotifier.publish();
-                                        Clipboard.text = responseText;
-                                        break;
-
-                                    }
-
-                                    case 401: {
-
-                                        folderRefresh("https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken);
-                                        break;
-
-                                    }
-
-                                    case 403: {
-
-                                        downloadNotifier.previewSummary = qsTr("Access to this feature was denied.");
-                                        downloadNotifier.publish();
-                                        break;
-
-                                    }
-
-                                    case 409: {
-
-                                        downloadNotifier.previewSummary = qsTr("Endpoint-specific error. Error copied to clipboard.");
-                                        downloadNotifier.publish();
-                                        Clipboard.text = responseText;
-                                        break;
-
-                                    }
-
-                                    case 429: {
-
-                                        downloadNotifier.previewSummary = qsTr("Too many requests.");
-                                        downloadNotifier.publish();
-                                        break;
-
-                                    }
-
-                                    case 999: {
-
-                                        downloadNotifier.previewSummary = qsTr("Error saving thumbnail to cache folder.");
-                                        downloadNotifier.publish();
-
-                                    }
-
-                                }
+                                console.log("Error when refreshing token.\nResponse code: " + responseCode + "\nResponse text: " + responseText);
+                                downloadNotifier.previewSummary = qsTr("Error reauthorizing - ") + responseCode;
+                                downloadNotifier.publish();
 
                             }
 
@@ -848,9 +767,9 @@ Page {
 
                         if (itemTag === "folder") {
 
-                            if (!activeDlTransfer) startZipDownload(); // nothing will happen if download is in progress
+                            if (!activeDlTransfer) startZipDownload();
 
-                            else { // plan to increase this limit to four active downloads.
+                            else {
 
                                 downloadNotifier.previewSummary = "Download already in progress";
                                 downloadNotifier.publish();
@@ -861,9 +780,9 @@ Page {
 
                         else {
 
-                            if (!activeDlTransfer) startDownload(); // nothing will happen if download is in progress
+                            if (!activeDlTransfer) startDownload();
 
-                            else { // plan to increase this limit to four active downloads.
+                            else {
 
                                 downloadNotifier.previewSummary = "Download already in progress";
                                 downloadNotifier.publish();
@@ -882,8 +801,6 @@ Page {
 
                     onClicked: {
 
-                        // hide reg row
-                        // show edit text
                         delegateItemColumn.visible = false;
                         editText.text = itemName;
                         editText.visible = true;
@@ -900,8 +817,8 @@ Page {
 
                     onClicked: {
 
-                        renameOrDeleteBusy.running = true;
-                        renameOrDelete.renameOrDelete("https://api.dropboxapi.com/2/files/get_temporary_link", "{\"path\":\"" + itemID + "\"}", "Bearer " + settings.accessKey, "CREATE_LINK");
+                        itemRequestBusy.running = true;
+                        itemRequest.postRequest("https://api.dropboxapi.com/2/files/get_temporary_link", "{\"path\":\"" + itemID + "\"}", "Bearer " + settings.accessKey, "CREATE_LINK");
 
                     }
 
@@ -911,7 +828,6 @@ Page {
 
                     enabled: false
                     height: Theme.paddingLarge
-                    //visible: itemTag === "folder" ? false : true
 
                     Separator {
 
@@ -934,8 +850,8 @@ Page {
 
                         listItem.remorseDelete(function() {
 
-                            renameOrDeleteBusy.running = true;
-                            renameOrDelete.renameOrDelete("https://api.dropboxapi.com/2/files/delete_v2", "{\"path\":\"" + itemID + "\"}", "Bearer " + settings.accessKey, "DELETE");
+                            itemRequestBusy.running = true;
+                            itemRequest.postRequest("https://api.dropboxapi.com/2/files/delete_v2", "{\"path\":\"" + itemID + "\"}", "Bearer " + settings.accessKey, "DELETE");
 
                         });
 
@@ -947,34 +863,21 @@ Page {
 
             NetworkAccess {
 
-                id: renameOrDelete
+                id: itemRequest
 
                 onFinished: {
-
-                    console.log("Request type is : " + requestType + "\nResponse code is: " + responseCode);
 
                     switch (responseCode) {
 
                     case 200:
 
-                        renameOrDeleteBusy.running = false;
+                        itemRequestBusy.running = false;
                         var idx = index;
 
                         if (requestType === "RENAME") {
 
                             folderListModel.set(index, {"itemName": editText.text});
                             editText.focus = false;
-
-                        }
-
-                        else if (requestType === "TOKEN_REFRESH") { // in this case fieldOne is URL and fieldTwo is data?
-
-                            var responseParsed = JSON.parse(responseText);
-                            settings.accessKey = responseParsed.access_token;
-                            settings.sync();
-                            // may be a better way than below. fieldOne should be the data JSON string
-                            if (origRequestType === "DELETE") renameOrDelete("https://api.dropboxapi.com/2/files/delete_v2", fieldOne, "Bearer " + settings.accessKey, origRequestType);
-                            else renameOrDelete("https://api.dropboxapi.com/2/files/move_v2", fieldOne, "Bearer " + settings.accessKey, origRequestType); // "RENAME"
 
                         }
 
@@ -985,34 +888,43 @@ Page {
                             Clipboard.text = jsonLink.link;
                             notificationMain.previewSummary = qsTr("4-hour link copied to clipboard.");
                             notificationMain.publish();
-                            renameOrDeleteBusy.running = false;
+                            itemRequestBusy.running = false;
 
                         }
 
-                        else { // has to be delete
+                        else {
 
-                            // going with just removing the entry in the list as opposed to refreshing the list from the server.
-                            // pro is it's quicker, con is that list is not fully up to date, e.g. change just made on another device etc.
-                            // though these circumstances would be rare? and user aware of ways to refresh folder list if so desired.
                             folderListModel.remove(idx);
 
                         }
 
                         break;
 
-                    case 401: // responseText should be the data with this responseCode
+                    case 401:
 
-                        // Need a way to keep saved the most recent request?
-                        // folderRefresh("https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken);
-                        console.log("401 response -- needs token refreshed.");
-                        tokenRefresh(requestType, "https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken, responseText, "{}");
+                        var url = "";
+
+                        switch (requestType) {
+
+                        case "RENAME":
+                            url = "https://api.dropboxapi.com/2/files/move_v2";
+                            break;
+                        case "CREATE_LINK":
+                            url = "https://api.dropboxapi.com/2/files/get_temporary_link";
+                            break;
+                        case "DELETE":
+                            url = "https://api.dropboxapi.com/2/files/delete_v2";
+
+                        }
+
+                        tokenRefresh(requestType, "https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken, responseText, url);
                         break;
 
                     case 409:
 
                         console.log("Response code is 409\nResponse text: " + responseText);
                         // could be various reasons, same name as before being one.
-                        renameOrDeleteBusy.running = false;
+                        itemRequestBusy.running = false;
                         editText.focus = false;
                         if (requestType === "RENAME") downloadNotifier.previewSummary = qsTr("Unable to rename item. Please try again & avoid entering the same name.");
                         else if (requestType === "DELETE" ) downloadNotifier.previewSummary = qsTr("Unable to delete item. Error code 409.");
@@ -1022,11 +934,33 @@ Page {
 
                     default:
 
-                        renameOrDeleteBusy.running = false;
+                        itemRequestBusy.running = false;
                         editText.focus = false;
                         downloadNotifier.previewSummary = qsTr("Unexpected error - Code ") + responseCode;
                         downloadNotifier.publish();
                         console.log("Error code: " + responseCode + "\nResponse text: " + responseText);
+
+                    }
+
+                }
+
+                onRefreshFinished: {
+
+                    if (responseCode === 200) {
+
+                        var responseParsed = JSON.parse(responseText);
+                        settings.accessKey = responseParsed.access_token;
+                        settings.sync();
+                        postRequest(origSupplemental, origData, "Bearer " + settings.accessKey, origRequestType);
+
+                    }
+
+                    else {
+
+                        downloadNotifier.previewSummary = qsTr("Error reauthorizing - ") + responseCode;
+                        downloadNotifier.publish();
+                        console.log("Token refresh attempt failed - response code: " + responseCode + "\nResponse text: " + responseText + "\nOriginal request type: " + origRequestType);
+                        listItemsBusy.running = false;
 
                     }
 
@@ -1038,7 +972,7 @@ Page {
 
                 if (settings.downloadToDownloads) {
 
-                    if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName) && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName, "fileId": itemID});
+                    if (containerRequest.fileAlreadyExists(settings.downloadDestination + '/' + itemName) && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName, "fileId": itemID});
 
                     else {
 
@@ -1052,9 +986,9 @@ Page {
 
                 else {
 
-                    if (listFolderOrUpload.directoryExists(settings.downloadDestination)) { // incase SD card removed or folder deleted etc.
+                    if (containerRequest.directoryExists(settings.downloadDestination)) { // incase SD card removed or folder deleted etc.
 
-                        if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName) && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName, "fileId": itemID});
+                        if (containerRequest.fileAlreadyExists(settings.downloadDestination + '/' + itemName) && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName, "fileId": itemID});
 
                         else {
 
@@ -1072,7 +1006,7 @@ Page {
                         settings.downloadDestination = defaultDownloadsLocation;
                         settings.sync();
 
-                        if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName) && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName, "fileId": itemID});
+                        if (containerRequest.fileAlreadyExists(settings.downloadDestination + '/' + itemName) && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName, "fileId": itemID});
 
                         else {
 
@@ -1092,7 +1026,7 @@ Page {
 
                 if (settings.downloadToDownloads) {
 
-                    if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName + ".zip") && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName + ".zip", "fileId": itemID});
+                    if (containerRequest.fileAlreadyExists(settings.downloadDestination + '/' + itemName + ".zip") && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName + ".zip", "fileId": itemID});
 
                     else {
 
@@ -1106,9 +1040,9 @@ Page {
 
                 else {
 
-                    if (listFolderOrUpload.directoryExists(settings.downloadDestination)) { // incase SD card removed or folder deleted etc.
+                    if (containerRequest.directoryExists(settings.downloadDestination)) { // incase SD card removed or folder deleted etc.
 
-                        if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName + ".zip") && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName + ".zip", "fileId": itemID});
+                        if (containerRequest.fileAlreadyExists(settings.downloadDestination + '/' + itemName + ".zip") && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName + ".zip", "fileId": itemID});
 
                         else {
 
@@ -1126,7 +1060,7 @@ Page {
                         settings.downloadDestination = defaultDownloadsLocation;
                         settings.sync();
 
-                        if (listFolderOrUpload.fileAlreadyExists(settings.downloadDestination + '/' + itemName + ".zip") && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName + ".zip", "fileId": itemID});
+                        if (containerRequest.fileAlreadyExists(settings.downloadDestination + '/' + itemName + ".zip") && settings.overwriteWarning) pageStack.push(confirmOverwriteDialog, {"fileName": itemName + ".zip", "fileId": itemID});
 
                         else {
 
@@ -1151,7 +1085,7 @@ Page {
 
             }
 
-            onClicked: { // Separate the immediate download from the menu for more options.
+            onClicked: {
 
                 if (settings.itemTapToDl) {
 
@@ -1159,7 +1093,7 @@ Page {
 
                     else {
 
-                        if (!activeDlTransfer) startDownload(); // nothing will happen if download is in progress
+                        if (!activeDlTransfer) startDownload();
 
                         else {
 
@@ -1189,7 +1123,7 @@ Page {
 
                     else {
 
-                        if (!activeDlTransfer) startDownload(); // nothing will happen if download is in progress
+                        if (!activeDlTransfer) startDownload();
 
                         else {
 
@@ -1208,6 +1142,7 @@ Page {
 
                 id: delegateItemRow
                 width: parent.width - (Theme.horizontalPageMargin * 2)
+                height: editText.visible ? editText.height + (Theme.paddingMedium * 2) : fileOrFolderItemRow.height + topGapRow.height + bottomGapRow.height
                 x: Theme.horizontalPageMargin
 
                 TextField {
@@ -1235,10 +1170,10 @@ Page {
 
                     EnterKey.onClicked: {
 
-                        renameOrDeleteBusy.running = true;
-                        var folderPath = itemPath.slice(0, (itemPath.length - itemName.length)); // should result in parent folder, including '/' at end.
-                        if (settings.autoRename) renameOrDelete.renameOrDelete("https://api.dropbox.com/2/files/move_v2", "{\"from_path\":\"" + itemPath + "\", \"to_path\":\"" + folderPath + editText.text + "\",\"autorename\":true}", "Bearer " + settings.accessKey, "RENAME");
-                        else renameOrDelete.renameOrDelete("https://api.dropbox.com/2/files/move_v2", "{\"from_path\":\"" + itemPath + "\", \"to_path\":\"" + folderPath + editText.text + "\",\"autorename\":false}", "Bearer " + settings.accessKey, "RENAME");
+                        itemRequestBusy.running = true;
+                        var folderPath = itemPath.slice(0, (itemPath.length - itemName.length));
+                        if (settings.autoRename) itemRequest.postRequest("https://api.dropbox.com/2/files/move_v2", "{\"from_path\":\"" + itemPath + "\", \"to_path\":\"" + folderPath + editText.text + "\",\"autorename\":true}", "Bearer " + settings.accessKey, "RENAME");
+                        else itemRequest.postRequest("https://api.dropbox.com/2/files/move_v2", "{\"from_path\":\"" + itemPath + "\", \"to_path\":\"" + folderPath + editText.text + "\",\"autorename\":false}", "Bearer " + settings.accessKey, "RENAME");
 
                     }
 
@@ -1262,12 +1197,14 @@ Page {
 
                         id: fileOrFolderItemRow
                         width: parent.width
+                        height: fileNameRow.height
 
                         Column {
 
                             id: fileIconColumn
                             width: fileIcon.width
-                            height: fileIcon.height
+                            height: fileNameRow.height
+                            topPadding: (height - fileIcon.height) / 2
 
                             Row {
 
@@ -1289,12 +1226,13 @@ Page {
 
                             id: fileNameColumn
                             width: parent.width - fileIconColumn.width
-                            height: fileIconColumn.height
+                            height: fileNameRow.height
 
                             Row {
 
                                 id: fileNameRow
                                 width: parent.width - Theme.paddingMedium
+                                height: fileOrFolderItem.lineCount > 1 ? fileOrFolderItem.height : fileIcon.height
                                 x: Theme.paddingSmall
 
                                 Label {
@@ -1302,9 +1240,13 @@ Page {
                                     id: fileOrFolderItem
                                     text: itemName
                                     width: parent.width
-                                    height: fileNameColumn.height
+                                    height: lineCount > 1 ? text.height : parent.height
                                     verticalAlignment: Text.AlignVCenter
-                                    truncationMode: TruncationMode.Fade
+                                    truncationMode: itemMenu.active ? TruncationMode.None : TruncationMode.Fade
+                                    maximumLineCount: itemMenu.active ? 10 : 1
+                                    wrapMode: itemMenu.active ? Text.WordWrap : Text.NoWrap
+                                    topPadding: lineCount > 1 ? Theme.paddingSmall : 0
+                                    bottomPadding: lineCount > 1 ? Theme.paddingSmall : 0
 
                                 }
 
@@ -1348,7 +1290,6 @@ Page {
                 if (settings.uploadToHomeFolder) uploadToHere = "";
                 uploadModel.set(0, {"currentUlItem": page.selectedFileName, "currentUlItemPath": page.selectedLocalFile, "currentFolderPath": uploadToHere, "uploadProgress": 0.0, "uploadProgressPct": "0%"});
                 activeUlTransfer = true;
-                ulTransferOpacity = 1.0;
                 mainUpload.upload("https://content.dropboxapi.com/2/files/upload", page.selectedLocalFile, "{\"path\":\"" + uploadToHere + "/" + page.selectedFileName + "\"}", "Bearer " + settings.accessKey);
 
             }
@@ -1456,8 +1397,8 @@ Page {
 
                 listItemsBusy.running = true;
                 folderListModel.clear();
-                if (folderNameText.text == "") listFolderOrUpload.listFolderContents("https://api.dropboxapi.com/2/files/create_folder_v2", "{\"path\":\"" + currentFolderPath + "/" + qsTr("Untitled") + "\"}", "Bearer " + settings.accessKey, "CREATE_FOLDER");
-                else listFolderOrUpload.listFolderContents("https://api.dropboxapi.com/2/files/create_folder_v2", "{\"path\":\"" + currentFolderPath + "/" + folderNameText.text + "\"}", "Bearer " + settings.accessKey, "CREATE_FOLDER");
+                if (folderNameText.text == "") containerRequest.postRequest("https://api.dropboxapi.com/2/files/create_folder_v2", "{\"path\":\"" + currentFolderPath + "/" + qsTr("Untitled") + "\"}", "Bearer " + settings.accessKey, "CREATE_FOLDER");
+                else containerRequest.postRequest("https://api.dropboxapi.com/2/files/create_folder_v2", "{\"path\":\"" + currentFolderPath + "/" + folderNameText.text + "\"}", "Bearer " + settings.accessKey, "CREATE_FOLDER");
 
             }
 
