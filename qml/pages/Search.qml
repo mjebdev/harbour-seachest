@@ -191,7 +191,7 @@ Page {
 
             else {
 
-                downloadNotifier.previewSummary = "Error reauthorizing - code " + responseCode;
+                downloadNotifier.previewSummary = qsTr("Error reauthorizing - ") + responseCode;
                 downloadNotifier.publish();
                 console.log("Token refresh attempt failed - response code: " + responseCode + "\nResponse text: " + responseText);
                 listItemsBusy.running = false;
@@ -876,7 +876,7 @@ Page {
 
                     else {
 
-                        downloadNotifier.previewSummary = "Error reauthorizing - code " + responseCode;
+                        downloadNotifier.previewSummary = qsTr("Error reauthorizing - ") + responseCode;
                         downloadNotifier.publish();
                         console.log("Token refresh attempt failed - response code: " + responseCode + "\nResponse text: " + responseText);
                         listItemsBusy.running = false;
