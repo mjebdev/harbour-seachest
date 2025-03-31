@@ -129,7 +129,7 @@ Page {
             TextSwitch {
 
                 id: justSearchFolderSwitch
-                text: qsTr("Show option to search only current folder")
+                text: qsTr("Show option to search current folder only")
                 checked: settings.justSearchFolder
 
                 onCheckedChanged: {
