@@ -454,7 +454,7 @@ Page {
                             else {
 
                                 console.log("Error when refreshing token.\nResponse code: " + responseCode + "\nResponse text: " + responseText);
-                                downloadNotifier.previewSummary = qsTr("Error authorizing - ") + responseCode + " - " + responseText;
+                                downloadNotifier.previewSummary = qsTr("Error reauthorizing - ") + responseCode;
                                 downloadNotifier.publish();
 
                             }
