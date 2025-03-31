@@ -24,7 +24,7 @@ Italian translation by Legacychimera247</source>
 <context>
     <name>Authorize</name>
     <message>
-        <source>To being using the app, please authorize it to access your Dropbox account. This will open a new browser window.</source>
+        <source>To begin using the app, please authorize it to access your Dropbox account. This will open a new browser window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
