@@ -33,7 +33,7 @@ Italiensk översättning av Legacychimera247</translation>
 <context>
     <name>Authorize</name>
     <message>
-        <source>To being using the app, please authorize it to access your Dropbox account. This will open a new browser window.</source>
+        <source>To begin using the app, please authorize it to access your Dropbox account. This will open a new browser window.</source>
         <translation>För att använda appen måste du ge den åtkomst till ditt Dropbox-konto. Detta öppnar ett nytt webbläsarfönster.</translation>
     </message>
     <message>
