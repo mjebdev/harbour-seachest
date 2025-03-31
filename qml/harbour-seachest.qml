@@ -10,7 +10,6 @@ ApplicationWindow {
     id: mainAppWindow
     initialPage: settings.accessKey === "" ? loadAuthorizeScreen : loadHomeScreen
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
-    allowedOrientations: defaultAllowedOrientations
     bottomMargin: downloadsUploadsPanel.visibleSize
 
     property string folderToList: ""
