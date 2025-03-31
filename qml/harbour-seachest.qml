@@ -180,7 +180,7 @@ ApplicationWindow {
 
             else {
 
-                notificationMain.previewSummary = qsTr("Error code %1. Description copied to clipboard.").arg(responseCode);
+                notificationMain.previewSummary = qsTr("Error code %1 - Description copied to clipboard").arg(responseCode);
                 console.log("Response code: " + responseCode + "\nResponse text: " + responseText);
                 Clipboard.text = responseText;
                 notificationMain.publish();
