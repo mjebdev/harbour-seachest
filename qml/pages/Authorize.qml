@@ -111,7 +111,7 @@ Page {
                 Label {
 
                     width: parent.width
-                    text: qsTr("To being using the app, please authorize it to access your Dropbox account. This will open a new browser window.")
+                    text: qsTr("To begin using the app, please authorize it to access your Dropbox account. This will open a new browser window.")
                     leftPadding: Theme.horizontalPageMargin * 2
                     rightPadding: Theme.horizontalPageMargin * 2
                     wrapMode: Text.WordWrap
