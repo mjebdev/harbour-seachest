@@ -96,6 +96,133 @@ public:
 
     }
 
+    Q_INVOKABLE void largeUpload(QString actionUrl, QString localPath, QByteArray jsonData, QString uploadStage, qint64 uploadOffset, QByteArray bearerSessionKey) {
+
+        QFile currentFile(localPath);
+
+        if (!currentFile.exists()) {
+
+            qInfo() << "Error - File does not exist.";
+            responseText = "Error - File does not exist.";
+            finished(responseText, 000, uploadStage);
+            return;
+
+        }
+
+        if (!currentFile.open(QIODevice::ReadOnly)) {
+
+            qInfo() << "Error - Unable to open file.";
+            responseText = "Error - Unable to open file.";
+            finished(responseText, 000, uploadStage);
+            return;
+
+        }
+
+        if (uploadStage == "UPLOAD_START") { // Upload the first 157286400 B
+
+            QByteArray dataFile = currentFile.read(157286400);
+            request.setUrl(actionUrl);
+            request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
+            request.setRawHeader("Authorization", bearerSessionKey);
+            request.setRawHeader("Dropbox-API-Arg", jsonData);
+            reply = connectionManager.post(request, dataFile);
+
+            connect(reply, &QNetworkReply::uploadProgress, [=] (qint64 ulProgress, qint64 ulTotal) {
+
+                ulProgressUpdate(ulProgress, ulTotal);
+
+            });
+
+            connect(reply, &QNetworkReply::finished, [=] () {
+
+                responseCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+                if (responseCode == 401) responseText = jsonData;
+                else responseText = reply->readAll();
+                finished(responseText, responseCode, "UPLOAD_START");
+
+            });
+
+        }
+
+        else if (uploadStage == "FINISH") {
+
+            if (currentFile.seek(uploadOffset)) {
+
+                QByteArray dataFile = currentFile.readAll(); // rest of file
+                request.setUrl(actionUrl);
+                request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
+                request.setRawHeader("Authorization", bearerSessionKey);
+                request.setRawHeader("Dropbox-API-Arg", jsonData);
+                reply = connectionManager.post(request, dataFile);
+
+                connect(reply, &QNetworkReply::uploadProgress, [=] (qint64 ulProgress, qint64 ulTotal) {
+
+                    ulProgressUpdate(ulProgress, ulTotal);
+
+                });
+
+                connect(reply, &QNetworkReply::finished, [=] () {
+
+                    responseCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+                    if (responseCode == 401) responseText = jsonData;
+                    else responseText = reply->readAll();
+                    finished(responseText, responseCode, "FINISH");
+
+                });
+
+            }
+
+            else {
+
+                qInfo() << "Error - Unable to seek to a new position in the file.";
+                responseText = "Error - Unable to seek to a new position in the file.";
+                finished(responseText, 000, "FINISH");
+
+            }
+
+        }
+
+        else { // In progress
+
+            if (currentFile.seek(uploadOffset)) {
+
+                QByteArray dataFile = currentFile.read(157286400); // should be from the offset point onward.
+
+                request.setUrl(actionUrl);
+                request.setHeader(QNetworkRequest::ContentTypeHeader, "application/octet-stream");
+                request.setRawHeader("Authorization", bearerSessionKey);
+                request.setRawHeader("Dropbox-API-Arg", jsonData);
+                reply = connectionManager.post(request, dataFile);
+
+                connect(reply, &QNetworkReply::uploadProgress, [=] (qint64 ulProgress, qint64 ulTotal) {
+
+                    ulProgressUpdate(ulProgress, ulTotal);
+
+                });
+
+                connect(reply, &QNetworkReply::finished, [=] () {
+
+                    responseCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+                    if (responseCode == 401) responseText = jsonData;
+                    else responseText = reply->readAll();
+                    finished(responseText, responseCode, "IN_PROGRESS");
+
+                });
+
+            }
+
+            else {
+
+                qInfo() << "Error - Unable to seek to a new position in the file.";
+                responseText = "Error - Unable to seek to a new position in the file.";
+                finished(responseText, 000, "IN_PROGRESS");
+
+            }
+
+        }
+
+    }
+
     Q_INVOKABLE void downloadThumbnail(QString actionUrl, QByteArray filepath, QString saveFileAs, QByteArray bearerSessionKey) {
 
         myFile.setFileName(cacheFolder + "/" + saveFileAs);
@@ -242,6 +369,13 @@ public:
     Q_INVOKABLE QString getDlFolderPath() {
 
         return downloadsFolder; // QML StandardPaths type only for Qt 6.2 onward -- for now using this method.
+
+    }
+
+    Q_INVOKABLE qint64 getFileSize(QString fileUrl) {
+
+        QFile whatSizeAmI(fileUrl);
+        return whatSizeAmI.size();
 
     }
 
