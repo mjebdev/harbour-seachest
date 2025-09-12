@@ -22,9 +22,16 @@ Page {
 
             Row {
 
+                width: parent.width
+                height: Theme.itemSizeSmall
+
+            }
+
+            Row {
+
                 id: titleRow
                 width: parent.width
-                height: Theme.itemSizeHuge + Theme.paddingLarge
+                height: titleLabel.height //Theme.itemSizeHuge + Theme.paddingLarge
 
                 Label {
 
@@ -34,8 +41,7 @@ Page {
                     font.pixelSize: Theme.fontSizeHuge
                     color: Theme.highlightColor
                     bottomPadding: 0
-                    height: parent.height
-                    verticalAlignment: Text.AlignBottom
+                    //verticalAlignment: Text.AlignBottom
                     horizontalAlignment: Text.AlignHCenter
 
                 }
@@ -46,19 +52,18 @@ Page {
 
                 width: parent.width
                 id: versionRow
-                height: Theme.itemSizeSmall
+                height: appVersionLabel.height + Theme.paddingMedium
 
                 Label {
 
                     id: appVersionLabel
-                    text: "v0.5"
+                    text: "v0.6"
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.secondaryColor
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignTop
+                    verticalAlignment: Text.AlignBottom
                     topPadding: 0
-                    height: parent.height
 
                 }
 
@@ -67,7 +72,7 @@ Page {
             Row {
 
                 width: parent.width
-                height: Theme.paddingLarge * 2
+                height: Theme.itemSizeSmall
 
             }
 
@@ -76,7 +81,7 @@ Page {
                 width: Theme.iconSizeExtraLarge
                 x: 0.5 * (page.width - Theme.iconSizeExtraLarge)
                 id: iconRow
-                height: Theme.iconSizeExtraLarge + Theme.paddingLarge
+                height: Theme.iconSizeExtraLarge
 
                 Image {
 
@@ -91,36 +96,52 @@ Page {
             Row {
 
                 width: parent.width
-                height: Theme.paddingLarge * 3
-
-            }
-
-            Separator {
-
-                width: parent.width - (Theme.horizontalPageMargin * 4)
-                x: Theme.horizontalPageMargin * 2
-                horizontalAlignment: Qt.AlignHCenter
-                color: Theme.primaryColor
+                height: Theme.itemSizeSmall
 
             }
 
             Row {
 
                 width: parent.width
+                height: authInstrLabel.height
 
                 Label {
 
+                    id: authInstrLabel
                     width: parent.width
                     text: qsTr("To begin using the app, please authorize it to access your Dropbox account. This will open a new browser window.")
-                    leftPadding: Theme.horizontalPageMargin * 2
-                    rightPadding: Theme.horizontalPageMargin * 2
+                    leftPadding: Theme.horizontalPageMargin
+                    rightPadding: Theme.horizontalPageMargin
                     wrapMode: Text.WordWrap
                     color: Theme.highlightColor
-                    topPadding: Theme.paddingLarge * 2
-                    bottomPadding: Theme.paddingLarge * 3
-                    horizontalAlignment: Text.AlignHCenter
+                    //topPadding: Theme.paddingLarge * 2
+                    //bottomPadding: Theme.paddingLarge * 3
+                    //horizontalAlignment: Text.AlignHCenter
 
                 }
+
+            }
+
+            Row {
+
+                width: parent.width
+                height: Theme.itemSizeSmall
+
+            }
+
+            Separator {
+
+                width: parent.width - (Theme.horizontalPageMargin * 2)
+                x: Theme.horizontalPageMargin
+                horizontalAlignment: Qt.AlignHCenter
+                color: Theme.highlightColor
+
+            }
+
+            Row {
+
+                width: parent.width
+                height: Theme.itemSizeSmall
 
             }
 
@@ -212,6 +233,13 @@ Page {
                 settings.accessKey = urlString.slice((urlString.indexOf("access_token=") + 13), urlString.indexOf("&expires_in="));
                 settings.refreshToken = urlString.slice((urlString.indexOf("refresh_token=") + 14));
                 settings.sync();
+                var expiresIn = Number(urlString.slice((urlString.indexOf("expires_in=") + 11), urlString.indexOf("&refresh_token=")));
+                console.log("On Authorize page - expiresIn value is " + expiresIn);
+                var rightNow = Number(Date.now());
+                rightNow = rightNow / 1000;
+                console.log("On Authorize page - should be in seconds - expiresIn value is " + expiresIn + " and rightNow is " + rightNow);
+                tokenWillExpireAt = expiresIn + rightNow;
+                console.log("Did expire time math work out? Value of tokenWillExpireAt equals " + tokenWillExpireAt);
                 authorizationNotifier.previewSummary = qsTr("Authorization Successful");
                 authorizationNotifier.publish();
                 loadingDataBusy.running = false;

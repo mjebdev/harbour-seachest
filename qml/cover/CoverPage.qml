@@ -27,4 +27,29 @@ CoverBackground {
 
     }
 
+    CoverActionList {
+
+        CoverAction {
+
+            id: uploadFromCoverButton
+            iconSource: Theme.colorScheme == Theme.LightOnDark ? "icon-cover-up.png" : "icon-cover-up-light-theme.png"
+
+            onTriggered: {
+
+                if (settings.accessKey !== "" && !activeUlTransfer) {
+
+                    currentUploadFolderPath = "";
+                    pageStack.push(filePickerPage);
+                    mainAppWindow.activate();
+
+                }
+
+                else if (activeUlTransfer) mainAppWindow.activate(); // just bring app to focus -- ongoing UL transfer will be then visible.
+
+            }
+
+        }
+
+    }
+
 }

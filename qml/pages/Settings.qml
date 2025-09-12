@@ -194,7 +194,6 @@ Page {
 
                 if (selectedPath) {
 
-                    console.log("onSelectedPathChanged signal sent");
                     settings.downloadToDownloads = false;
                     settings.downloadDestination = selectedPath;
                     settings.sync();
@@ -219,4 +218,3 @@ Page {
     }
 
 }
-    

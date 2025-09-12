@@ -1,6 +1,5 @@
 import QtQuick 2.6
 import Sailfish.Silica 1.0
-import Sailfish.Pickers 1.0
 import NetworkAccess 1.0
 import Nemo.Notifications 1.0
 
@@ -12,8 +11,6 @@ Page {
     property string currentDownload
     property string localHeaderName
     property string currentFolderPath
-    property string selectedLocalFile
-    property string selectedFileName
     property bool homeFolder
 
     ListModel {
@@ -269,7 +266,6 @@ Page {
 
             }
 
-            console.log("currentFolderPath is " + currentFolderPath + ".");
             pageStack.pushAttached(Qt.resolvedUrl("Search.qml"), {"folderName": localHeaderName, "folderPath": currentFolderPath, "homeFolder": homeFolder});
             // the above was not working when placed in a Component.onCompleted function so placing at the end of a successful-http-request response processing.
             if (moreLeft === false) listItemsBusy.running = false;
@@ -281,9 +277,12 @@ Page {
             if (responseCode == 200) {
 
                 var responseParsed = JSON.parse(responseText);
+                var rightNow = Date.now();
+                rightNow = rightNow / 1000;
+                var expiresIn = responseParsed.expires_in;
+                tokenWillExpireAt = expiresIn + rightNow;
                 settings.accessKey = responseParsed.access_token;
                 settings.sync();
-                console.log("Reauthorized.");
                 if (origRequestType == "CREATE_FOLDER") postRequest("https://api.dropboxapi.com/2/files/create_folder_v2", origData, "Bearer " + settings.accessKey, origRequestType);
                 else postRequest("https://api.dropboxapi.com/2/files/list_folder", origData, "Bearer " + settings.accessKey, origRequestType);
 
@@ -305,7 +304,6 @@ Page {
         }
 
         localHeaderName = folderToListName;
-        console.log("folderToList is " + folderToList + ".");
         currentFolderPath = folderToListPath;
         folderListModel.clear();
         listItemsBusy.running = true;
@@ -383,6 +381,7 @@ Page {
 
                 onClicked: {
 
+                    currentUploadFolderPath = currentFolderPath;
                     pageStack.push(filePickerPage);
 
                 }
@@ -519,12 +518,14 @@ Page {
 
                             if (responseCode === 200) {
 
-                                console.log("onRefreshFinished - responseCode 200. Retrying the upload function with new accessKey.")
                                 var responseParsed = JSON.parse(responseText);
+                                var rightNow = Date.now();
+                                rightNow = rightNow / 1000;
+                                var expiresIn = responseParsed.expires_in;
+                                tokenWillExpireAt = expiresIn + rightNow;
                                 settings.accessKey = responseParsed.access_token;
                                 settings.sync();
                                 var keepEmSeparated = new Date().getTime();
-                                console.log("testing access to model values -- itemName: " + itemName);
                                 var fileString = itemName + keepEmSeparated.toString() + ".jpeg";
                                 downloadThumbnail("https://content.dropboxapi.com/2/files/get_thumbnail_v2", origData, fileString, "Bearer " + settings.accessKey);
 
@@ -884,7 +885,6 @@ Page {
                         else if (requestType == "CREATE_LINK") {
 
                             var jsonLink = JSON.parse(responseText);
-                            console.log("Link gathered from response: " + jsonLink.link);
                             Clipboard.text = jsonLink.link;
                             notificationMain.previewSummary = qsTr("4-hour link copied to clipboard.");
                             notificationMain.publish();
@@ -949,6 +949,10 @@ Page {
                     if (responseCode === 200) {
 
                         var responseParsed = JSON.parse(responseText);
+                        var rightNow = Date.now();
+                        rightNow = rightNow / 1000;
+                        var expiresIn = responseParsed.expires_in;
+                        tokenWillExpireAt = expiresIn + rightNow;
                         settings.accessKey = responseParsed.access_token;
                         settings.sync();
                         postRequest(origSupplemental, origData, "Bearer " + settings.accessKey, origRequestType);
@@ -1274,29 +1278,7 @@ Page {
 
     }
 
-    Component {
 
-        id: filePickerPage
-
-        FilePickerPage {
-
-            title: qsTr("Upload")
-
-            onSelectedContentPropertiesChanged: {
-
-                page.selectedFileName = selectedContentProperties.fileName;
-                page.selectedLocalFile = selectedContentProperties.filePath;
-                var uploadToHere = currentFolderPath;
-                if (settings.uploadToHomeFolder) uploadToHere = "";
-                uploadModel.set(0, {"currentUlItem": page.selectedFileName, "currentUlItemPath": page.selectedLocalFile, "currentFolderPath": uploadToHere, "uploadProgress": 0.0, "uploadProgressPct": "0%"});
-                activeUlTransfer = true;
-                mainUpload.upload("https://content.dropboxapi.com/2/files/upload", page.selectedLocalFile, "{\"path\":\"" + uploadToHere + "/" + page.selectedFileName + "\"}", "Bearer " + settings.accessKey);
-
-            }
-
-        }
-
-    }
 
     Component {
 

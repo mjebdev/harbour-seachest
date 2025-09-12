@@ -804,7 +804,6 @@ Page {
                         else if (requestType == "CREATE_LINK") {
 
                             var jsonLink = JSON.parse(responseText);
-                            console.log("Link gathered from response: " + jsonLink.link);
                             Clipboard.text = jsonLink.link;
                             notificationMain.previewSummary = qsTr("4-hour link copied to clipboard.");
                             notificationMain.publish();

@@ -7,7 +7,7 @@ Page {
     allowedOrientations: Orientation.PortraitMask
 
     SilicaFlickable {
-
+    
         anchors.fill: parent
         contentHeight: column.height
 
@@ -62,7 +62,7 @@ Page {
                             font.pixelSize: Theme.fontSizeLarge
                             color: Theme.highlightColor
                             topPadding: Theme.paddingLarge
-                            bottomPadding: Theme.paddingLarge * 2
+                            bottomPadding: Theme.paddingLarge
 
                         }
 
@@ -92,7 +92,7 @@ Page {
                             font.pixelSize: Theme.fontSizeExtraSmall
                             color: Theme.highlightColor
                             wrapMode: Text.Wrap
-                            text: qsTr("An unofficial Dropbox client for Sailfish OS.\n\nby Michael J. Barrett\n\nVersion 0.5\nLicensed under GNU GPLv3\n\nSwedish translation by Åke Engelbrektson\n\nItalian translation by Legacychimera247");
+                            text: qsTr("An unofficial Dropbox client for Sailfish OS.\n\nby Michael J. Barrett\n\nVersion 0.6\nLicensed under GNU GPLv3\n\nSwedish translation by Åke Engelbrektson\n\nItalian translation by Legacychimera247");
                             bottomPadding: Theme.paddingLarge
 
                         }
