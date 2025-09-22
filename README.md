@@ -1,14 +1,15 @@
 # SeaChest
-An unofficial Dropbox client for Sailfish OS.
+A Dropbox client for Sailfish OS.
 
 Version 0.6  
-Licensed under GNU GPLv3
+Licensed under GNU GPLv3  
+Tested on SFOS versions 4.6 and 5.0  
 
-Swedish translation by [eson57](https://github.com/eson57)  
-Italian translation by [Legacychimera247](https://github.com/Legacychimera247)  
-Translation submissions are welcome.
+SeaChest is an unofficial application and is in no way associated with Dropbox, Inc.  
 
-Tested on SFOS versions 4.6 and 5.0
+Swedish translation by [eson57](https://github.com/eson57).  
+Italian translation by [Legacychimera247](https://github.com/Legacychimera247).  
+Translation submissions welcome.  
 
 ### Features
 
@@ -42,7 +43,7 @@ Tested on SFOS versions 4.6 and 5.0
 - Good to have a native app with an interface consistent with Ambience.
 - Less dependence on Android App Support.
 
-### Donations welcome!
+### Tips
 
 - [Ko-fi](https://ko-fi.com/mjebdev)
 - [PayPal](https://paypal.me/mjebdev)
