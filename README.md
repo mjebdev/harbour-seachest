@@ -1,7 +1,7 @@
 # SeaChest
 A Dropbox client for Sailfish OS.
 
-Version 0.6  
+Version 0.6.1  
 Licensed under GNU GPLv3  
 Tested on SFOS versions 4.6 and 5.0  
 
