@@ -16,7 +16,6 @@ ApplicationWindow {
     property string folderToList: ""
     property string folderToListName: qsTr("Home");
     property string folderToListPath: ""
-    property string defaultDownloadsLocation: mainDownload.getDlFolderPath();
     property string uploadLargeItemSession
     property string selectedLocalFile
     property string selectedFileName
@@ -25,6 +24,7 @@ ApplicationWindow {
     property int uploadTotalSegments
     property int uploadOffsetValue
     property int uploadCurrentSegment
+    property int cacheThumbFileNo
     property var tokenWillExpireAt
     property bool activeDlTransfer
     property bool activeUlTransfer
@@ -68,15 +68,18 @@ ApplicationWindow {
 
             onSelectedContentPropertiesChanged: {
 
-                mainAppWindow.selectedFileName = selectedContentProperties.fileName;
-                mainAppWindow.selectedLocalFile = selectedContentProperties.filePath;
+                console.log("SelectedContentPropertiesChanged.");
+                // selecting a file to upload not always working, needing to isolate and fix
+
+                selectedFileName = selectedContentProperties.fileName;
+                selectedLocalFile = selectedContentProperties.filePath;
 
                 var uploadToHere = currentUploadFolderPath;
                 if (settings.uploadToHomeFolder) uploadToHere = "";
                 activeUlTransfer = true;
-                var fileSize = mainUpload.getFileSize(mainAppWindow.selectedLocalFile);
+                var fileSize = mainUpload.getFileSize(selectedLocalFile);
 
-                console.log("The full path of the file is " + mainAppWindow.selectedLocalFile);
+                console.log("The full path of the file is " + selectedLocalFile);
                 console.log("The var 'filesize' equals " + fileSize);
 
                 var rightNow = Number(Date.now());
@@ -104,8 +107,8 @@ ApplicationWindow {
                         uploadLargeItemSize = fileSize;
                         uploadOffsetValue = 0;
                         activeUlLarge = true;
-                        uploadModel.set(0, {"currentUlItem": mainAppWindow.selectedFileName, "currentUlItemPath": mainAppWindow.selectedLocalFile, "currentFolderPath": uploadToHere, "uploadProgress": 0.0, "uploadProgressPct": "0%", "currentUlItemLarge": "[1/" + uploadTotalSegments + "] " + mainAppWindow.selectedFileName});
-                        mainUpload.largeUpload("https://content.dropboxapi.com/2/files/upload_session/start", mainAppWindow.selectedLocalFile, "{\"close\":false}", "UPLOAD_START", 0, "Bearer " + settings.accessKey);
+                        uploadModel.set(0, {"currentUlItem": selectedFileName, "currentUlItemPath": selectedLocalFile, "currentFolderPath": uploadToHere, "uploadProgress": 0.0, "uploadProgressPct": "0%", "currentUlItemLarge": "[1/" + uploadTotalSegments + "] " + selectedFileName});
+                        mainUpload.largeUpload("https://content.dropboxapi.com/2/files/upload_session/start", selectedLocalFile, "{\"close\":false}", "UPLOAD_START", 0, "Bearer " + settings.accessKey);
 
                     }
 
@@ -113,18 +116,18 @@ ApplicationWindow {
 
                 else {
 
-                    if ((tokenWillExpireAt - rightNow) < 1800) { // 30 minutes for smaller uploads if slow.
+                    if ((tokenWillExpireAt - rightNow) < 1800) {
 
                         console.log("Refreshing token prior to the upload request being made.");
-                        mainUpload.tokenRefresh("UPLOAD", "https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken, "{\"path\":\"" + uploadToHere + "/" + mainAppWindow.selectedFileName + "\"}", "{}");
+                        mainUpload.tokenRefresh("UPLOAD", "https://nodejs.mjeb.dev/seachest/refresh?refresh_token=" + settings.refreshToken, "{\"path\":\"" + uploadToHere + "/" + selectedFileName + "\"}", "{}");
 
                     }
 
                     else {
 
                         activeUlLarge = false;
-                        uploadModel.set(0, {"currentUlItem": mainAppWindow.selectedFileName, "currentUlItemPath": mainAppWindow.selectedLocalFile, "currentFolderPath": uploadToHere, "uploadProgress": 0.0, "uploadProgressPct": "0%"});
-                        mainUpload.upload("https://content.dropboxapi.com/2/files/upload", mainAppWindow.selectedLocalFile, "{\"path\":\"" + uploadToHere + "/" + mainAppWindow.selectedFileName + "\"}", "Bearer " + settings.accessKey);
+                        uploadModel.set(0, {"currentUlItem": selectedFileName, "currentUlItemPath": selectedLocalFile, "currentFolderPath": uploadToHere, "uploadProgress": 0.0, "uploadProgressPct": "0%"});
+                        mainUpload.upload("https://content.dropboxapi.com/2/files/upload", selectedLocalFile, "{\"path\":\"" + uploadToHere + "/" + selectedFileName + "\"}", "Bearer " + settings.accessKey);
 
                     }
 
@@ -143,8 +146,11 @@ ApplicationWindow {
 
         property string accessKey: ""
         property string refreshToken: ""
-        property string downloadDestination: mainDownload.getDlFolderPath();
+        property string downloadDestination: StandardPaths.download
+        property string coverUploadLocId: ""
+        property string coverUploadLocName: ""
         property bool downloadToDownloads: true
+        property bool coverUploadCustom
         property bool uploadToHomeFolder
         property bool itemTapToDl: true
         property bool showThumbnailForImageFiles: true
@@ -248,6 +254,7 @@ ApplicationWindow {
                     notificationMain.previewSummary = "Upload of '" + uploadModel.get(0).currentUlItem + "' was successful.";
                     notificationMain.publish();
                     activeUlTransfer = false;
+                    console.log("clearing the uploadModel due to mainUpload finishing with 200 and request type of UPLOAD.");
                     uploadModel.clear();
 
                 }
@@ -267,9 +274,7 @@ ApplicationWindow {
                         // will be 2nd segment for next request
                         uploadCurrentSegment = 2;
 
-                        uploadModel.set(0, {"uploadedSoFar": 0, "uploadTotal": 0, "uploadProgress": 0, "uploadProgressPct":  "0%"});
-
-                        uploadModel.set(0, {"currentUlItemLarge": "[2/" + uploadTotalSegments + "] " + currentFile});
+                        uploadModel.set(0, {"uploadedSoFar": 0, "uploadTotal": 0, "uploadProgress": 0, "uploadProgressPct":  "0%", "currentUlItemLarge": "[2/" + uploadTotalSegments + "] " + currentFile});
 
                         uploadOffsetValue = 157286400;
 
@@ -298,6 +303,7 @@ ApplicationWindow {
                         notificationMain.previewSummary = "Upload of '" + uploadModel.get(0).currentUlItem + "' was successful.";
                         notificationMain.publish();
                         activeUlTransfer = false;
+                        console.log("clearing the uploadModel due to mainUpload finishing with 200 and request type of FINISH.");
                         uploadModel.clear();
                         uploadCurrentSegment = 1;
                         uploadOffsetValue = 0;
@@ -320,6 +326,7 @@ ApplicationWindow {
 
             else if (responseText === "Error - File does not exist.") {
 
+                activeUlTransfer = false;
                 notificationMain.previewSummary = qsTr("Error - File does not exist.");
                 notificationMain.publish();
 
@@ -327,6 +334,7 @@ ApplicationWindow {
 
             else if (responseText === "Error - Unable to open file.") {
 
+                activeUlTransfer = false;
                 notificationMain.previewSummary = qsTr("Error - Unable to open file.");
                 notificationMain.publish();
 
@@ -334,6 +342,7 @@ ApplicationWindow {
 
             else {
 
+                activeUlTransfer = false;
                 notificationMain.previewSummary = qsTr("Error code %1 - Description copied to clipboard").arg(responseCode);
                 console.log("Response code: " + responseCode + "\nResponse text: " + responseText);
                 Clipboard.text = responseText;
@@ -391,7 +400,9 @@ ApplicationWindow {
                 notificationMain.previewSummary = qsTr("Error reauthorizing. Please try submitting request again.");
                 notificationMain.publish();
                 activeUlTransfer = false;
+                activeUlLarge = false;
                 uploadLargeItemSession = "";
+                console.log("clearing the uploadModel due to refresh process response code being something other than 200.");
                 uploadModel.clear();
 
             }
